@@ -1,7 +1,7 @@
 Summary:	Audio/Video real-time streaming
 Name:		mediastreamer
 Version:	2.3.0
-Release:	5
+Release:	6
 License:	LGPL
 Group:		Libraries
 Source0:	http://mirror.lihnidos.org/GNU/savannah/linphone/mediastreamer/%{name}-%{version}.tar.gz
