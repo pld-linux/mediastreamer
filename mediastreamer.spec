@@ -1,12 +1,13 @@
 Summary:	Audio/Video real-time streaming
 Name:		mediastreamer
-Version:	2.3.0
-Release:	6
+Version:	2.7.3
+Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://mirror.lihnidos.org/GNU/savannah/linphone/mediastreamer/%{name}-%{version}.tar.gz
-# Source0-md5:	867d539cf11e942dcbfd08d4b3182397
-URL:		http://www.tcpdump.org/
+# Source0-md5:	5213307f557d86aa648f1a53a885138c
+Patch0:		%{name}-nov4l1.atch
+URL:		http://www.linphone.org/eng/documentation/dev/mediastreamer2.html
 BuildRequires:	SDL-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	autoconf >= 2.53
@@ -47,8 +48,13 @@ Static mediastreamer library.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__automake}
 %configure
 %{__make}
 
@@ -68,7 +74,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
 %attr(755,root,root) %{_libdir}/libmediastreamer.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmediastreamer.so.0
+%attr(755,root,root) %ghost %{_libdir}/libmediastreamer.so.1
 
 %files devel
 %defattr(644,root,root,755)
