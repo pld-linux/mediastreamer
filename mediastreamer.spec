@@ -1,11 +1,11 @@
 Summary:	Audio/Video real-time streaming
 Name:		mediastreamer
-Version:	2.7.3
+Version:	2.8.2
 Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://mirror.lihnidos.org/GNU/savannah/linphone/mediastreamer/%{name}-%{version}.tar.gz
-# Source0-md5:	5213307f557d86aa648f1a53a885138c
+# Source0-md5:	e51ea9d5fce1396b374d10473dfbadec
 Patch0:		%{name}-nov4l1.atch
 URL:		http://www.linphone.org/eng/documentation/dev/mediastreamer2.html
 BuildRequires:	SDL-devel
@@ -19,10 +19,13 @@ BuildRequires:	libgsm-devel
 BuildRequires:	libsamplerate-devel
 BuildRequires:	libtheora-devel
 BuildRequires:	libv4l-devel
-BuildRequires:	ortp-devel >= 0.16.1
+BuildRequires:	ortp-devel >= 0.17.0
 BuildRequires:	pkgconfig
+BuildRequires:	sed >= 4.0
+BuildRequires:	spandsp-devel
 BuildRequires:	speex-devel
 BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXv-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -49,13 +52,17 @@ Static mediastreamer library.
 %prep
 %setup -q
 %patch0 -p1
+%{__sed} -i 's,gsm/gsm.h,gsm.h,g' configure.ac src/gsm.c
 
 %build
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
 %{__automake}
-%configure
+%configure \
+	--enable-static \
+	--disable-tests
+
 %{__make}
 
 %install
@@ -64,13 +71,18 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# Remove duplicated documentation
+rm -fr $RPM_BUILD_ROOT/usr/share/doc/mediastreamer/mediastreamer-2.8.2/html/
+
+%find_lang %{name}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
 %attr(755,root,root) %{_libdir}/libmediastreamer.so.*.*
