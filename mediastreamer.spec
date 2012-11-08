@@ -7,6 +7,7 @@ Group:		Libraries
 Source0:	http://mirror.lihnidos.org/GNU/savannah/linphone/mediastreamer/%{name}-%{version}.tar.gz
 # Source0-md5:	e51ea9d5fce1396b374d10473dfbadec
 Patch0:		%{name}-nov4l1.atch
+Patch1:		%{name}-ffmpeg10.atch
 URL:		http://www.linphone.org/eng/documentation/dev/mediastreamer2.html
 BuildRequires:	SDL-devel
 BuildRequires:	alsa-lib-devel
@@ -52,6 +53,7 @@ Static mediastreamer library.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 %{__sed} -i 's,gsm/gsm.h,gsm.h,g' configure.ac src/gsm.c
 
 %build
