@@ -7,7 +7,7 @@ Group:		Libraries
 Source0:	http://mirror.lihnidos.org/GNU/savannah/linphone/mediastreamer/%{name}-%{version}.tar.gz
 # Source0-md5:	e51ea9d5fce1396b374d10473dfbadec
 Patch0:		%{name}-nov4l1.atch
-Patch1:		%{name}-ffmpeg10.atch
+Patch1:		%{name}-ffmpeg10.patch
 URL:		http://www.linphone.org/eng/documentation/dev/mediastreamer2.html
 BuildRequires:	SDL-devel
 BuildRequires:	alsa-lib-devel
