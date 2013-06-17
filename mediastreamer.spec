@@ -1,13 +1,12 @@
 Summary:	Audio/Video real-time streaming
 Name:		mediastreamer
-Version:	2.8.2
-Release:	3
+Version:	2.9.0
+Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://mirror.lihnidos.org/GNU/savannah/linphone/mediastreamer/%{name}-%{version}.tar.gz
-# Source0-md5:	e51ea9d5fce1396b374d10473dfbadec
-Patch0:		%{name}-nov4l1.atch
-Patch1:		%{name}-ffmpeg10.patch
+# Source0-md5:	f2ea0fe731a363749a81b6eaac22a62c
+Patch0:		%{name}-imagedir.patch
 URL:		http://www.linphone.org/eng/documentation/dev/mediastreamer2.html
 BuildRequires:	SDL-devel
 BuildRequires:	alsa-lib-devel
@@ -20,13 +19,14 @@ BuildRequires:	libgsm-devel
 BuildRequires:	libsamplerate-devel
 BuildRequires:	libtheora-devel
 BuildRequires:	libv4l-devel
-BuildRequires:	ortp-devel >= 0.17.0
+BuildRequires:	ortp-devel >= 0.21.0
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
 BuildRequires:	spandsp-devel
 BuildRequires:	speex-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
+BuildRequires:	xxd
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -53,8 +53,6 @@ Static mediastreamer library.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%{__sed} -i 's,gsm/gsm.h,gsm.h,g' configure.ac src/gsm.c
 
 %build
 %{__libtoolize}
@@ -74,7 +72,7 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 # Remove duplicated documentation
-rm -fr $RPM_BUILD_ROOT/usr/share/doc/mediastreamer/mediastreamer-2.8.2/html/
+rm -r $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/html/
 
 %find_lang %{name}
 
@@ -86,18 +84,24 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README
-%attr(755,root,root) %{_libdir}/libmediastreamer.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmediastreamer.so.1
+%doc AUTHORS ChangeLog NEWS README help/doc/html
+%attr(755,root,root) %{_libdir}/libmediastreamer_base.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libmediastreamer_base.so.3
+%attr(755,root,root) %{_libdir}/libmediastreamer_voip.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libmediastreamer_voip.so.3
+%{_pixmapsdir}/%{name}
 
 %files devel
 %defattr(644,root,root,755)
 %doc help/doc/html
-%attr(755,root,root) %{_libdir}/libmediastreamer.so
-%{_libdir}/libmediastreamer.la
+%attr(755,root,root) %{_libdir}/libmediastreamer_base.so
+%attr(755,root,root) %{_libdir}/libmediastreamer_voip.so
+%{_libdir}/libmediastreamer_base.la
+%{_libdir}/libmediastreamer_voip.la
 %{_includedir}/mediastreamer2
 %{_pkgconfigdir}/mediastreamer.pc
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libmediastreamer.a
+%{_libdir}/libmediastreamer_base.a
+%{_libdir}/libmediastreamer_voip.a
