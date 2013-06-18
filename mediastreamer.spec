@@ -52,7 +52,7 @@ Requires:	libvpx >= 0.9.6
 Requires:	opus >= 0.9.0
 Requires:	ortp >= 0.21.0
 %{?with_pulseaudio:Requires:	pulseaudio-libs >= 0.9.21}
-Requires:	spandsp-libs >= 0.0.6
+Requires:	spandsp >= 0.0.6
 Requires:	speex >= 1.2-beta3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
