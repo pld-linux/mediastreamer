@@ -8,7 +8,7 @@ Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
 Version:	2.9.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/mediastreamer/%{name}-%{version}.tar.gz
@@ -132,6 +132,9 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# for external plugins
+install -d $RPM_BUILD_ROOT%{_libdir}/mediaserver/plugins
+
 # Remove duplicated documentation
 %{__rm} -r $RPM_BUILD_ROOT/usr/share/doc/%{name}-%{version}/html
 
@@ -152,6 +155,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libmediastreamer_base.so.3
 %attr(755,root,root) %{_libdir}/libmediastreamer_voip.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libmediastreamer_voip.so.3
+%dir %{_libdir}/mediaserver
+%dir %{_libdir}/mediaserver/plugins
 %{_pixmapsdir}/%{name}
 
 %files devel
