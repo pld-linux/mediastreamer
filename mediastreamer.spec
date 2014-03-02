@@ -7,19 +7,19 @@
 Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
-Version:	2.9.0
-Release:	5
+Version:	2.10.0
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/mediastreamer/%{name}-%{version}.tar.gz
-# Source0-md5:	f2ea0fe731a363749a81b6eaac22a62c
+# Source0-md5:	5a4e7545e212068534b56fdf41c961e9
 Patch0:		%{name}-imagedir.patch
 URL:		http://www.linphone.org/eng/documentation/dev/mediastreamer2.html
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	alsa-lib-devel
 BuildRequires:	autoconf >= 2.53
-BuildRequires:	automake
+BuildRequires:	automake >= 1:1.9
 BuildRequires:	doxygen
 # libavcodec >= 51.0.0, libswscale >= 0.7.0
 BuildRequires:	ffmpeg-devel
@@ -36,7 +36,7 @@ BuildRequires:	libupnp-devel < 1.7
 BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
 BuildRequires:	opus-devel >= 0.9.0
-BuildRequires:	ortp-devel >= 0.21.0
+BuildRequires:	ortp-devel >= 0.23.0
 BuildRequires:	pkgconfig
 %{?with_pulseaudio:BuildRequires:	pulseaudio-devel >= 0.9.21}
 BuildRequires:	sed >= 4.0
@@ -50,7 +50,7 @@ Requires:	libtheora >= 1.0-0.alpha7
 Requires:	libupnp >= 1.6
 Requires:	libvpx >= 0.9.6
 Requires:	opus >= 0.9.0
-Requires:	ortp >= 0.21.0
+Requires:	ortp >= 0.23.0
 %{?with_pulseaudio:Requires:	pulseaudio-libs >= 0.9.21}
 Requires:	spandsp >= 0.0.6
 Requires:	speex >= 1.2-beta3
@@ -81,7 +81,7 @@ Requires:	libupnp-devel < 1.7
 Requires:	libv4l-devel
 Requires:	libvpx-devel >= 0.9.6
 Requires:	opus-devel >= 0.9.0
-Requires:	ortp-devel >= 0.21.0
+Requires:	ortp-devel >= 0.23.0
 %{?with_pulseaudio:Requires:	pulseaudio-devel >= 0.9.21}
 Requires:	spandsp-devel >= 0.0.6
 Requires:	speex-devel >= 1.2-beta3
