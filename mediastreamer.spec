@@ -23,7 +23,7 @@ BuildRequires:	automake >= 1:1.9
 BuildRequires:	doxygen
 # libavcodec >= 51.0.0, libswscale >= 0.7.0
 BuildRequires:	ffmpeg-devel
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 %{?with_opengl:BuildRequires:	glew-devel >= 1.5}
 BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	intltool >= 0.40
