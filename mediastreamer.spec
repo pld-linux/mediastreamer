@@ -42,6 +42,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
 BuildRequires:	spandsp-devel >= 0.0.6
 BuildRequires:	speex-devel >= 1.2-beta3
+BuildRequires:	speexdsp-devel >= 1.2-beta3
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xxd
@@ -54,6 +55,7 @@ Requires:	ortp >= 0.23.0
 %{?with_pulseaudio:Requires:	pulseaudio-libs >= 0.9.21}
 Requires:	spandsp >= 0.0.6
 Requires:	speex >= 1.2-beta3
+Requires:	speexdsp >= 1.2-beta3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -85,6 +87,7 @@ Requires:	ortp-devel >= 0.23.0
 %{?with_pulseaudio:Requires:	pulseaudio-devel >= 0.9.21}
 Requires:	spandsp-devel >= 0.0.6
 Requires:	speex-devel >= 1.2-beta3
+Requires:	speexdsp-devel >= 1.2-beta3
 Requires:	xorg-lib-libX11-devel
 Requires:	xorg-lib-libXv-devel
 
