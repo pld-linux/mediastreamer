@@ -41,7 +41,7 @@ BuildRequires:	pkgconfig
 %{?with_pulseaudio:BuildRequires:	pulseaudio-devel >= 0.9.21}
 BuildRequires:	sed >= 4.0
 BuildRequires:	spandsp-devel >= 0.0.6
-BuildRequires:	speex-devel >= 1.2-beta3
+BuildRequires:	speex-devel >= 1:1.2-beta3
 BuildRequires:	speexdsp-devel >= 1.2-beta3
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
@@ -54,7 +54,7 @@ Requires:	opus >= 0.9.0
 Requires:	ortp >= 0.23.0
 %{?with_pulseaudio:Requires:	pulseaudio-libs >= 0.9.21}
 Requires:	spandsp >= 0.0.6
-Requires:	speex >= 1.2-beta3
+Requires:	speex >= 1:1.2-beta3
 Requires:	speexdsp >= 1.2-beta3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -86,7 +86,7 @@ Requires:	opus-devel >= 0.9.0
 Requires:	ortp-devel >= 0.23.0
 %{?with_pulseaudio:Requires:	pulseaudio-devel >= 0.9.21}
 Requires:	spandsp-devel >= 0.0.6
-Requires:	speex-devel >= 1.2-beta3
+Requires:	speex-devel >= 1:1.2-beta3
 Requires:	speexdsp-devel >= 1.2-beta3
 Requires:	xorg-lib-libX11-devel
 Requires:	xorg-lib-libXv-devel
