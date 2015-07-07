@@ -1,10 +1,10 @@
 # TODO:
 # - libebml2, libmatroska2 (Matroska support)
-# - libbzrtp >= 1.0.0 (ZRTP support)
 # - dtls (polarssl/mbedtls >= 1.4 when released)
 #
 # Conditional build:
 %bcond_without	bcg729		# support for G279AnnexB in RTC3389 implementation of Comfort Noise Payload
+%bcond_without	zrtp		# support for RFC 6189: Media Path Key Agreement for Unicast Secure RTP
 %bcond_without	opengl		# X11+OpenGL rendering support
 %bcond_with	pcap		# audio playing from PCAP files
 %bcond_without	srtp		# SRTP (secure RTP) support
@@ -32,6 +32,7 @@ BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.9
 %{?with_bcg729:BuildRequires:	bcg729-devel >= 1.0}
+%{?with_zrtp:BuildRequires:	bzrtp-devel >= 1.0.0}
 BuildRequires:	doxygen
 # libavcodec >= 51.0.0, libswscale >= 0.7.0
 BuildRequires:	ffmpeg-devel
@@ -62,6 +63,7 @@ BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xxd
 %{?with_bcg729:Requires:	bcg729 >= 1.0}
+%{?with_zrtp:Requires:	bzrtp >= 1.0.0}
 %{?with_opengl:Requires:	glew >= 1.5}
 Requires:	libtheora >= 1.0-0.alpha7
 Requires:	libupnp >= 1.6
@@ -92,6 +94,7 @@ Requires:	%{name} = %{version}-%{release}
 %{?with_opengl:Requires:	OpenGL-devel}
 %{?with_alsa:Requires:	alsa-lib-devel}
 %{?with_bcg729:Requires:	bcg729-devel >= 1.0}
+%{?with_zrtp:Requires:	bzrtp-devel >= 1.0.0}
 Requires:	ffmpeg-devel
 %{?with_opengl:Requires:	glew-devel >= 1.5}
 Requires:	libtheora-devel >= 1.0-0.alpha7
@@ -150,6 +153,7 @@ Statyczna biblioteka mediastreamer.
 	--enable-pulseaudio%{!?with_pulseaudio:=no} \
 	--disable-silent-rules \
 	--enable-static \
+	%{!?with_zrtp:--disable-zrtp} \
 	%{!?with_srtp:--with-srtp=none}
 
 %{__make}
