@@ -1,13 +1,13 @@
 # TODO:
-# - libebml2, libmatroska2 (Matroska support)
-# - dtls (polarssl/mbedtls >= 1.4 when released)
+# - dtls (polarssl/mbedtls >= 1.4 with DTLS-SRTP support, not released yet)
 #
 # Conditional build:
 %bcond_without	bcg729		# support for G279AnnexB in RTC3389 implementation of Comfort Noise Payload
+%bcond_without	srtp		# SRTP (secure RTP) support
 %bcond_without	zrtp		# support for RFC 6189: Media Path Key Agreement for Unicast Secure RTP
+%bcond_without	matroska	# Matroska support via libebml2/libmatroska2
 %bcond_without	opengl		# X11+OpenGL rendering support
 %bcond_with	pcap		# audio playing from PCAP files
-%bcond_without	srtp		# SRTP (secure RTP) support
 # audio I/O
 %bcond_without	alsa		# ALSA sound I/O support
 %bcond_with	arts		# aRts sound I/O support
@@ -18,13 +18,13 @@ Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
 Version:	2.11.2
-Release:	3
+Release:	4
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/mediastreamer/%{name}-%{version}.tar.gz
 # Source0-md5:	8b654c3e8938d50df9e83d2e353888a6
 Patch0:		%{name}-imagedir.patch
-URL:		http://www.linphone.org/eng/documentation/dev/mediastreamer2.html
+URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 BuildRequires:	SDL-devel >= 1.2.0
 %{?with_alsa:BuildRequires:	alsa-lib-devel}
@@ -48,6 +48,7 @@ BuildRequires:	libupnp-devel >= 1.6
 BuildRequires:	libupnp-devel < 1.7
 BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
+%{?with_matroska:BuildRequires:	matroska-foundation-devel}
 BuildRequires:	opus-devel >= 0.9.0
 BuildRequires:	ortp-devel >= 0.24.0
 BuildRequires:	pkgconfig
@@ -102,6 +103,7 @@ Requires:	libupnp-devel >= 1.6
 Requires:	libupnp-devel < 1.7
 Requires:	libv4l-devel
 Requires:	libvpx-devel >= 0.9.6
+%{?with_matroska:Requires:	matroska-foundation-devel}
 Requires:	opus-devel >= 0.9.0
 Requires:	ortp-devel >= 0.24.0
 Requires:	polarssl-devel
@@ -148,6 +150,7 @@ Statyczna biblioteka mediastreamer.
 	%{?with_bcg729:--enable-bcg729} \
 	--enable-external-ortp \
 	%{!?with_opengl:--disable-glx} \
+	%{!?with_matroska:--disable-matroska} \
 	%{?with_pcap:--enable-pcap} \
 	%{?with_portaudio:--enable-portaudio} \
 	--enable-pulseaudio%{!?with_pulseaudio:=no} \
