@@ -1,4 +1,5 @@
 # TODO:
+# - switch to mbledtls when 2.x is supported (mbed_ssl_init instead of ssl_init)
 # - dtls (polarssl/mbedtls >= 1.4 with DTLS-SRTP support, not released yet)
 #
 # Conditional build:
@@ -13,17 +14,19 @@
 %bcond_with	arts		# aRts sound I/O support
 %bcond_with	portaudio	# PortAudio sound I/O support
 %bcond_without	pulseaudio	# PulseAudio sound I/O support
+%bcond_without	static_libs	# static library
 #
 Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
-Version:	2.11.2
-Release:	4
+Version:	2.12.0
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/mediastreamer/%{name}-%{version}.tar.gz
-# Source0-md5:	8b654c3e8938d50df9e83d2e353888a6
+# Source0-md5:	f4570034ce3875cf238e0e1249b5ec2e
 Patch0:		%{name}-imagedir.patch
+Patch1:		%{name}-ffmpeg.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 BuildRequires:	SDL-devel >= 1.2.0
@@ -88,8 +91,8 @@ przesyłania i przetwarzania strumieni audio/video w czasie
 rzeczywistym. Jest napisana w czystym C, oparta na bibliotece oRTP.
 
 %package devel
-Summary:	Header files and development documentation for mediastreamer library
-Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja do biblioteki mediastreamer
+Summary:	Header files and development documentation for mediastreamer libraries
+Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja do bibliotek mediastreamer
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 %{?with_opengl:Requires:	OpenGL-devel}
@@ -117,26 +120,28 @@ Requires:	xorg-lib-libX11-devel
 Requires:	xorg-lib-libXv-devel
 
 %description devel
-Header files and development documentation for mediastreamer library.
+Header files and development documentation for mediastreamer
+libraries.
 
 %description devel -l pl.UTF-8
-Pliki nagłówkowe i dokumentacja do biblioteki mediastreamer.
+Pliki nagłówkowe i dokumentacja do bibliotek mediastreamer.
 
 %package static
-Summary:	Static mediastreamer library
-Summary(pl.UTF-8):	Statyczna biblioteka mediastreamer
+Summary:	Static mediastreamer libraries
+Summary(pl.UTF-8):	Statyczne biblioteki mediastreamer
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
-Static mediastreamer library.
+Static mediastreamer libraries.
 
 %description static -l pl.UTF-8
-Statyczna biblioteka mediastreamer.
+Statyczne biblioteki mediastreamer.
 
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -155,7 +160,7 @@ Statyczna biblioteka mediastreamer.
 	%{?with_portaudio:--enable-portaudio} \
 	--enable-pulseaudio%{!?with_pulseaudio:=no} \
 	--disable-silent-rules \
-	--enable-static \
+	%{?with_static_libs:--enable-static} \
 	%{!?with_zrtp:--disable-zrtp} \
 	%{!?with_srtp:--with-srtp=none}
 
@@ -188,9 +193,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/msaudiocmp
 %{?with_pcap:%attr(755,root,root) %{_bindir}/pcap_playback}
 %attr(755,root,root) %{_libdir}/libmediastreamer_base.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmediastreamer_base.so.4
+%attr(755,root,root) %ghost %{_libdir}/libmediastreamer_base.so.6
 %attr(755,root,root) %{_libdir}/libmediastreamer_voip.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmediastreamer_voip.so.4
+%attr(755,root,root) %ghost %{_libdir}/libmediastreamer_voip.so.6
 %dir %{_libdir}/mediastreamer
 %dir %{_libdir}/mediastreamer/plugins
 %{_pixmapsdir}/%{name}
@@ -205,7 +210,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/mediastreamer2
 %{_pkgconfigdir}/mediastreamer.pc
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libmediastreamer_base.a
 %{_libdir}/libmediastreamer_voip.a
+%endif
