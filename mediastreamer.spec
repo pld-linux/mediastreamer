@@ -27,6 +27,7 @@ Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/mediastreamer
 # Source0-md5:	1ca115e94a718638fbecf8352c169861
 Patch0:		%{name}-imagedir.patch
 Patch1:		%{name}-ffmpeg.patch
+Patch2:		%{name}-werror.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 BuildRequires:	SDL-devel >= 1.2.0
@@ -142,6 +143,7 @@ Statyczne biblioteki mediastreamer.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
