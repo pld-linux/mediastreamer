@@ -20,7 +20,7 @@ Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
 Version:	2.12.1
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/mediastreamer/%{name}-%{version}.tar.gz
@@ -28,6 +28,7 @@ Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/mediastreamer
 Patch0:		%{name}-imagedir.patch
 Patch1:		%{name}-ffmpeg.patch
 Patch2:		%{name}-werror.patch
+Patch3:		ffmpeg4.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 BuildRequires:	SDL-devel >= 1.2.0
@@ -144,6 +145,7 @@ Statyczne biblioteki mediastreamer.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__libtoolize}
@@ -152,6 +154,7 @@ Statyczne biblioteki mediastreamer.
 %{__autoheader}
 %{__automake}
 %configure \
+	--disable-strict \
 	--enable-alsa%{!?with_alsa:=no} \
 	%{?with_arts:--enable-artsc} \
 	%{?with_bcg729:--enable-bcg729} \
