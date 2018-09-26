@@ -1,0 +1,10 @@
+--- mediastreamer-2.16.1/configure.ac~	2017-06-23 10:52:57.000000000 +0200
++++ mediastreamer-2.16.1/configure.ac	2018-09-26 12:03:38.918658108 +0200
+@@ -1311,7 +1311,6 @@ AC_SUBST(MS_PUBLIC_CFLAGS)
+ 
+ AC_CONFIG_FILES(
+ 	Makefile
+-	po/Makefile.in
+ 	m4/Makefile
+ 	include/Makefile
+ 	include/mediastreamer2/Makefile

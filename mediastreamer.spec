@@ -19,16 +19,14 @@
 Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
-Version:	2.12.1
-Release:	4
+Version:	2.16.1
+Release:	1
 License:	GPL v2+
 Group:		Libraries
-Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/mediastreamer/%{name}-%{version}.tar.gz
-# Source0-md5:	1ca115e94a718638fbecf8352c169861
-Patch0:		%{name}-imagedir.patch
-Patch1:		%{name}-ffmpeg.patch
-Patch2:		%{name}-werror.patch
-Patch3:		ffmpeg4.patch
+Source0:	https://linphone.org/releases/sources//mediastreamer/%{name}-%{version}.tar.gz
+# Source0-md5:	15b8b129a922180855d04d58cdd08d43
+Patch0:		build.patch
+Patch1:		libsrtp2.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 BuildRequires:	SDL-devel >= 1.2.0
@@ -37,7 +35,7 @@ BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.9
 %{?with_bcg729:BuildRequires:	bcg729-devel >= 1.0}
-%{?with_zrtp:BuildRequires:	bzrtp-devel >= 1.0.0}
+%{?with_zrtp:BuildRequires:	bzrtp-devel >= 1.0.6}
 BuildRequires:	doxygen
 # libavcodec >= 51.0.0, libswscale >= 0.7.0
 BuildRequires:	ffmpeg-devel
@@ -55,7 +53,7 @@ BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
 %{?with_matroska:BuildRequires:	matroska-foundation-devel}
 BuildRequires:	opus-devel >= 0.9.0
-BuildRequires:	ortp-devel >= 0.24.0
+BuildRequires:	ortp-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	polarssl-devel
 %{?with_portaudio:BuildRequires:	portaudio-devel}
@@ -64,18 +62,18 @@ BuildRequires:	sed >= 4.0
 BuildRequires:	spandsp-devel >= 0.0.6
 BuildRequires:	speex-devel >= 1:1.2-beta3
 BuildRequires:	speexdsp-devel >= 1.2-beta3
-%{?with_srtp:BuildRequires:	srtp-devel}
+%{?with_srtp:BuildRequires:	libsrtp2-devel}
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xxd
 %{?with_bcg729:Requires:	bcg729 >= 1.0}
-%{?with_zrtp:Requires:	bzrtp >= 1.0.0}
+%{?with_zrtp:Requires:	bzrtp >= 1.0.6}
 %{?with_opengl:Requires:	glew >= 1.5}
 Requires:	libtheora >= 1.0-0.alpha7
 Requires:	libupnp >= 1.6
 Requires:	libvpx >= 0.9.6
 Requires:	opus >= 0.9.0
-Requires:	ortp >= 0.24.0
+Requires:	ortp >= 1.0.0
 %{?with_pulseaudio:Requires:	pulseaudio-libs >= 0.9.21}
 Requires:	spandsp >= 0.0.6
 Requires:	speex >= 1:1.2-beta3
@@ -100,7 +98,7 @@ Requires:	%{name} = %{version}-%{release}
 %{?with_opengl:Requires:	OpenGL-devel}
 %{?with_alsa:Requires:	alsa-lib-devel}
 %{?with_bcg729:Requires:	bcg729-devel >= 1.0}
-%{?with_zrtp:Requires:	bzrtp-devel >= 1.0.0}
+%{?with_zrtp:Requires:	bzrtp-devel >= 1.0.6}
 Requires:	ffmpeg-devel
 %{?with_opengl:Requires:	glew-devel >= 1.5}
 Requires:	libtheora-devel >= 1.0-0.alpha7
@@ -110,14 +108,14 @@ Requires:	libv4l-devel
 Requires:	libvpx-devel >= 0.9.6
 %{?with_matroska:Requires:	matroska-foundation-devel}
 Requires:	opus-devel >= 0.9.0
-Requires:	ortp-devel >= 0.24.0
+Requires:	ortp-devel >= 1.0.0
 Requires:	polarssl-devel
 %{?with_portaudio:Requires:	portaudio-devel}
 %{?with_pulseaudio:Requires:	pulseaudio-devel >= 0.9.21}
 Requires:	spandsp-devel >= 0.0.6
 Requires:	speex-devel >= 1:1.2-beta3
 Requires:	speexdsp-devel >= 1.2-beta3
-%{?with_srtp:Requires:	srtp-devel}
+%{?with_srtp:Requires:	libsrtp2-devel}
 Requires:	xorg-lib-libX11-devel
 Requires:	xorg-lib-libXv-devel
 
@@ -144,11 +142,13 @@ Statyczne biblioteki mediastreamer.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
+
+[ ! -e gitversion.h ] && echo '#define MS2_GIT_VERSION "%{version}"' > src/gitversion.h
 
 %build
 %{__libtoolize}
+%{__gettextize}
+%{__intltoolize}
 %{__aclocal}
 %{__autoconf}
 %{__autoheader}
