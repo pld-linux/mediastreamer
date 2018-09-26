@@ -20,7 +20,7 @@ Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
 Version:	2.16.1
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://linphone.org/releases/sources//mediastreamer/%{name}-%{version}.tar.gz
@@ -194,17 +194,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README
+%doc AUTHORS ChangeLog NEWS README.md
 %attr(755,root,root) %{_bindir}/mediastream
 %attr(755,root,root) %{_bindir}/msaudiocmp
 %{?with_pcap:%attr(755,root,root) %{_bindir}/pcap_playback}
 %attr(755,root,root) %{_libdir}/libmediastreamer_base.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmediastreamer_base.so.6
+%attr(755,root,root) %ghost %{_libdir}/libmediastreamer_base.so.10
 %attr(755,root,root) %{_libdir}/libmediastreamer_voip.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmediastreamer_voip.so.6
+%attr(755,root,root) %ghost %{_libdir}/libmediastreamer_voip.so.10
 %dir %{_libdir}/mediastreamer
 %dir %{_libdir}/mediastreamer/plugins
-%{_pixmapsdir}/%{name}
+%{_pixmapsdir}/*.jpg
 
 %files devel
 %defattr(644,root,root,755)

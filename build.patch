@@ -8,3 +8,34 @@
  	m4/Makefile
  	include/Makefile
  	include/mediastreamer2/Makefile
+--- mediastreamer-2.16.1/configure.ac~	2018-09-26 12:17:00.000000000 +0200
++++ mediastreamer-2.16.1/configure.ac	2018-09-26 12:53:27.045356783 +0200
+@@ -1,5 +1,5 @@
+ dnl Process this file with autoconf to produce a configure script.
+-AC_INIT([mediastreamer],[2.15.1])
++AC_INIT([mediastreamer],[2.16.1])
+ 
+ AC_MSG_NOTICE([$PACKAGE_NAME-$PACKAGE_VERSION		A mediastreaming library for telephony application.])
+ AC_MSG_NOTICE([licensed under the terms of the General Public License (GPL)])
+--- mediastreamer-2.16.1/src/Makefile.am~	2017-04-06 11:27:56.000000000 +0200
++++ mediastreamer-2.16.1/src/Makefile.am	2018-09-26 12:58:10.680232083 +0200
+@@ -467,7 +467,7 @@ endif
+ 
+ AM_OBJCFLAGS=$(AM_CFLAGS)
+ 
+-imgdir=$(datadir)/images/
++imgdir=$(datadir)/pixmaps/
+ 
+ img_DATA=voip/nowebcamCIF.jpg
+ 
+--- mediastreamer-2.16.1/src/base/msfactory.c~	2017-07-20 15:56:05.000000000 +0200
++++ mediastreamer-2.16.1/src/base/msfactory.c	2018-09-26 13:00:39.631224915 +0200
+@@ -231,7 +231,7 @@ void ms_factory_init(MSFactory *obj){
+ 	ms_message("ms_factory_init() done: platform_tags=%s", tags);
+ 	ms_free(tags);
+ 	obj->echo_canceller_filtername = ms_strdup("MSWebRTCAECM");
+-	obj->image_resources_dir = bctbx_strdup_printf("%s/images", PACKAGE_DATA_DIR);
++	obj->image_resources_dir = bctbx_strdup_printf("/usr/share/pixmaps");
+ }
+ 
+ 
