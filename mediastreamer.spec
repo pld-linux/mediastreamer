@@ -35,6 +35,7 @@ BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.9
 %{?with_bcg729:BuildRequires:	bcg729-devel >= 1.0}
+BuildRequires:	bctoolbox-devel
 %{?with_zrtp:BuildRequires:	bzrtp-devel >= 1.0.6}
 BuildRequires:	doxygen
 # libavcodec >= 51.0.0, libswscale >= 0.7.0
