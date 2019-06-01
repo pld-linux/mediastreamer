@@ -1,6 +1,3 @@
-# TODO:
-# - switch to mbledtls when 2.x is supported (mbed_ssl_init instead of ssl_init)
-# - dtls (polarssl/mbedtls >= 1.4 with DTLS-SRTP support, not released yet)
 #
 # Conditional build:
 %bcond_without	bcg729		# support for G279AnnexB in RTC3389 implementation of Comfort Noise Payload
@@ -23,7 +20,7 @@ Version:	2.16.1
 Release:	5
 License:	GPL v2+
 Group:		Libraries
-Source0:	https://linphone.org/releases/sources//mediastreamer/%{name}-%{version}.tar.gz
+Source0:	https://linphone.org/releases/sources/mediastreamer/%{name}-%{version}.tar.gz
 # Source0-md5:	15b8b129a922180855d04d58cdd08d43
 Patch0:		build.patch
 Patch1:		libsrtp2.patch
@@ -35,14 +32,13 @@ BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.9
 %{?with_bcg729:BuildRequires:	bcg729-devel >= 1.0}
-BuildRequires:	bctoolbox-devel
+BuildRequires:	bctoolbox-devel >= 0.4.0
 %{?with_zrtp:BuildRequires:	bzrtp-devel >= 1.0.6}
 BuildRequires:	doxygen
 # libavcodec >= 51.0.0, libswscale >= 0.7.0
 BuildRequires:	ffmpeg-devel
 BuildRequires:	gettext-tools
 %{?with_opengl:BuildRequires:	glew-devel >= 1.5}
-BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	intltool >= 0.40
 BuildRequires:	libgsm-devel
 %{?with_pcap:BuildRequires:	libpcap-devel}
@@ -56,7 +52,6 @@ BuildRequires:	libvpx-devel >= 0.9.6
 BuildRequires:	opus-devel >= 0.9.0
 BuildRequires:	ortp-devel >= 1.0.0
 BuildRequires:	pkgconfig
-BuildRequires:	polarssl-devel
 %{?with_portaudio:BuildRequires:	portaudio-devel}
 %{?with_pulseaudio:BuildRequires:	pulseaudio-devel >= 0.9.21}
 BuildRequires:	sed >= 4.0
@@ -68,6 +63,7 @@ BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xxd
 %{?with_bcg729:Requires:	bcg729 >= 1.0}
+Requires:	bctoolbox >= 0.4.0
 %{?with_zrtp:Requires:	bzrtp >= 1.0.6}
 %{?with_opengl:Requires:	glew >= 1.5}
 Requires:	libtheora >= 1.0-0.alpha7
@@ -99,6 +95,7 @@ Requires:	%{name} = %{version}-%{release}
 %{?with_opengl:Requires:	OpenGL-devel}
 %{?with_alsa:Requires:	alsa-lib-devel}
 %{?with_bcg729:Requires:	bcg729-devel >= 1.0}
+Requires:	bctoolbox-devel >= 0.4.0
 %{?with_zrtp:Requires:	bzrtp-devel >= 1.0.6}
 Requires:	ffmpeg-devel
 %{?with_opengl:Requires:	glew-devel >= 1.5}
@@ -110,7 +107,6 @@ Requires:	libvpx-devel >= 0.9.6
 %{?with_matroska:Requires:	matroska-foundation-devel}
 Requires:	opus-devel >= 0.9.0
 Requires:	ortp-devel >= 1.0.0
-Requires:	polarssl-devel
 %{?with_portaudio:Requires:	portaudio-devel}
 %{?with_pulseaudio:Requires:	pulseaudio-devel >= 0.9.21}
 Requires:	spandsp-devel >= 0.0.6
@@ -162,7 +158,7 @@ Statyczne biblioteki mediastreamer.
 	--enable-external-ortp \
 	%{!?with_opengl:--disable-glx} \
 	%{!?with_matroska:--disable-matroska} \
-	%{?with_pcap:--enable-pcap} \
+	%{!?with_pcap:--disable-pcap} \
 	%{?with_portaudio:--enable-portaudio} \
 	--enable-pulseaudio%{!?with_pulseaudio:=no} \
 	--disable-silent-rules \
@@ -205,7 +201,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libmediastreamer_voip.so.10
 %dir %{_libdir}/mediastreamer
 %dir %{_libdir}/mediastreamer/plugins
-%{_pixmapsdir}/*.jpg
+%{_pixmapsdir}/nowebcamCIF.jpg
 
 %files devel
 %defattr(644,root,root,755)
