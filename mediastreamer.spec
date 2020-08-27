@@ -44,8 +44,7 @@ BuildRequires:	libgsm-devel
 %{?with_pcap:BuildRequires:	libpcap-devel}
 BuildRequires:	libtheora-devel >= 1.0-0.alpha7
 BuildRequires:	libtool >= 2:2
-BuildRequires:	libupnp-devel >= 1.6
-BuildRequires:	libupnp-devel < 1.7
+BuildRequires:	libupnp1.6-devel
 BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
 %{?with_matroska:BuildRequires:	matroska-foundation-devel}
@@ -67,7 +66,7 @@ Requires:	bctoolbox >= 0.4.0
 %{?with_zrtp:Requires:	bzrtp >= 1.0.6}
 %{?with_opengl:Requires:	glew >= 1.5}
 Requires:	libtheora >= 1.0-0.alpha7
-Requires:	libupnp >= 1.6
+Requires:	libupnp1.6
 Requires:	libvpx >= 0.9.6
 Requires:	opus >= 0.9.0
 Requires:	ortp >= 1.0.0
@@ -100,8 +99,7 @@ Requires:	bctoolbox-devel >= 0.4.0
 Requires:	ffmpeg-devel
 %{?with_opengl:Requires:	glew-devel >= 1.5}
 Requires:	libtheora-devel >= 1.0-0.alpha7
-Requires:	libupnp-devel >= 1.6
-Requires:	libupnp-devel < 1.7
+Requires:	libupnp1.6-devel
 Requires:	libv4l-devel
 Requires:	libvpx-devel >= 0.9.6
 %{?with_matroska:Requires:	matroska-foundation-devel}
