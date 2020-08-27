@@ -152,6 +152,7 @@ Statyczne biblioteki mediastreamer.
 %{__automake}
 %configure \
 	--disable-strict \
+	--disable-tests \
 	--enable-alsa%{!?with_alsa:=no} \
 	%{?with_arts:--enable-artsc} \
 	%{?with_bcg729:--enable-bcg729} \
