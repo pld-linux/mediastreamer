@@ -17,7 +17,7 @@ Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
 Version:	2.16.1
-Release:	6
+Release:	7
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://linphone.org/releases/sources/mediastreamer/%{name}-%{version}.tar.gz
