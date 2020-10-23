@@ -1,0 +1,92 @@
+diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd.c mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd.c
+--- mediastreamer-2.16.1/src/upnp/upnp_igd.c	2017-04-06 11:27:56.000000000 +0200
++++ mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd.c	2020-10-23 14:04:57.300609331 +0200
+@@ -395,7 +395,7 @@
+  *   d_event  -- event associated with the new device
+  *
+  ********************************************************************************/
+-void upnp_igd_add_device(upnp_igd_context *igd_ctxt, IXML_Document *desc_doc, struct Upnp_Discovery *d_event) {
++void upnp_igd_add_device(upnp_igd_context *igd_ctxt, IXML_Document *desc_doc, UpnpDiscovery *d_event) {
+ 	upnp_igd_device_node *deviceNode, *tmpdevnode;
+ 	int found = 0;
+ 	int ret;
+@@ -423,7 +423,7 @@
+ 	baseURL = upnp_igd_get_first_document_item(igd_ctxt, desc_doc, "URLBase");
+ 	relURL = upnp_igd_get_first_document_item(igd_ctxt, desc_doc, "presentationURL");
+ 
+-	ret = UpnpResolveURL((baseURL ? baseURL : d_event->Location), relURL, presURL);
++	ret = UpnpResolveURL((baseURL ? baseURL : UpnpDiscovery_get_Location_cstr(d_event)), relURL, presURL);
+ 
+ 	if (UPNP_E_SUCCESS != ret) {
+ 		upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error generating presURL from %s + %s", baseURL, relURL);
+@@ -444,7 +444,7 @@
+ 			if (found) {
+ 				/* The device is already there, so just update  */
+ 				/* the advertisement timeout field */
+-				tmpdevnode->device.advr_time_out = d_event->Expires;
++				tmpdevnode->device.advr_time_out = UpnpDiscovery_get_Expires(d_event);
+ 				upnp_igd_print(igd_ctxt, UPNP_IGD_DEBUG, "IGD device: %s[%s] | Update expires(%d)", friendlyName, UDN, tmpdevnode->device.advr_time_out);
+ 			} else {
+ 				upnp_igd_print(igd_ctxt, UPNP_IGD_MESSAGE, "Add IGD device: %s[%s]", friendlyName, UDN);
+@@ -453,12 +453,12 @@
+ 				deviceNode = (upnp_igd_device_node *)  malloc(sizeof(upnp_igd_device_node));
+ 				memset(deviceNode->device.services, '\0', sizeof(upnp_igd_service) * IGD_SERVICE_SERVCOUNT);
+ 				strncpy(deviceNode->device.udn, UDN, sizeof(deviceNode->device.udn));
+-				strncpy(deviceNode->device.desc_doc_url, d_event->Location, sizeof(deviceNode->device.desc_doc_url));
++				strncpy(deviceNode->device.desc_doc_url, UpnpDiscovery_get_Location_cstr(d_event), sizeof(deviceNode->device.desc_doc_url));
+ 				strncpy(deviceNode->device.friendly_name, friendlyName, sizeof(deviceNode->device.friendly_name));
+ 				strncpy(deviceNode->device.model_name, modelName, sizeof(deviceNode->device.model_name));
+ 				strncpy(deviceNode->device.model_number, modelNumber, sizeof(deviceNode->device.model_number));
+ 				strncpy(deviceNode->device.pres_url, presURL, sizeof(deviceNode->device.pres_url));
+-				deviceNode->device.advr_time_out = d_event->Expires;
++				deviceNode->device.advr_time_out = UpnpDiscovery_get_Expires(d_event);
+ 
+ 				// Reset values
+ 				serviceId = NULL;
+@@ -468,7 +468,7 @@
+ 
+ 				for (service = 0; service < IGD_SERVICE_SERVCOUNT;
+ 				     service++) {
+-					if (upnp_igd_get_find_and_parse_service(igd_ctxt, desc_doc, d_event->Location,
++					if (upnp_igd_get_find_and_parse_service(igd_ctxt, desc_doc, UpnpDiscovery_get_Location_cstr(d_event),
+ 							IGDServiceType[service], &serviceId, &event_url, &controlURL)) {
+ 						upnp_igd_print(igd_ctxt, UPNP_IGD_DEBUG, "Subscribing to EventURL %s...",event_url);
+ 						ret =
+@@ -891,16 +891,16 @@
+ 	switch(event_type) {
+     	case UPNP_DISCOVERY_ADVERTISEMENT_ALIVE:
+     	case UPNP_DISCOVERY_SEARCH_RESULT: {
+-    		struct Upnp_Discovery *d_event = (struct Upnp_Discovery *)event;
++    		UpnpDiscovery *d_event = (UpnpDiscovery *)event;
+     		IXML_Document *desc_doc = NULL;
+     		int ret;
+ 
+-    		if (d_event->ErrCode != UPNP_E_SUCCESS) {
+-    			upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error in Discovery Callback -- %d", d_event->ErrCode);
++    		if (UpnpDiscovery_get_ErrCode(d_event) != UPNP_E_SUCCESS) {
++    			upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error in Discovery Callback -- %d", UpnpDiscovery_get_ErrCode(d_event));
+     		}
+-    		ret = UpnpDownloadXmlDoc(d_event->Location, &desc_doc);
++    		ret = UpnpDownloadXmlDoc(UpnpDiscovery_get_Location_cstr(d_event), &desc_doc);
+     		if (ret != UPNP_E_SUCCESS) {
+-    			upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error obtaining device description from %s -- error = %d", d_event->Location, ret);
++    			upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error obtaining device description from %s -- error = %d", UpnpDiscovery_get_Location_cstr(d_event), ret);
+     		} else {
+     			upnp_igd_add_device(igd_ctxt, desc_doc, d_event);
+     		}
+@@ -910,11 +910,11 @@
+     	}
+     	break;
+     	case UPNP_DISCOVERY_ADVERTISEMENT_BYEBYE: {
+-    		struct Upnp_Discovery *d_event = (struct Upnp_Discovery *)event;
+-    		if (d_event->ErrCode != UPNP_E_SUCCESS) {
+-    			upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error in Discovery ByeBye Callback -- %d", d_event->ErrCode);
++    		UpnpDiscovery *d_event = (UpnpDiscovery *)event;
++    		if (UpnpDiscovery_get_ErrCode(d_event) != UPNP_E_SUCCESS) {
++    			upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error in Discovery ByeBye Callback -- %d", UpnpDiscovery_get_ErrCode(d_event));
+     		}
+-    		upnp_igd_remove_device(igd_ctxt, d_event->DeviceId);
++    		upnp_igd_remove_device(igd_ctxt, UpnpDiscovery_get_DeviceID_cstr(d_event));
+     	}
+     	break;
+     	/* SOAP Stuff */
