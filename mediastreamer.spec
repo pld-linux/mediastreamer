@@ -17,13 +17,14 @@ Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
 Version:	2.16.1
-Release:	8
+Release:	9
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://linphone.org/releases/sources/mediastreamer/%{name}-%{version}.tar.gz
 # Source0-md5:	15b8b129a922180855d04d58cdd08d43
 Patch0:		build.patch
 Patch1:		libsrtp2.patch
+Patch2:		libupnp-1.14.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 BuildRequires:	SDL-devel >= 1.2.0
@@ -44,7 +45,7 @@ BuildRequires:	libgsm-devel
 %{?with_pcap:BuildRequires:	libpcap-devel}
 BuildRequires:	libtheora-devel >= 1.0-0.alpha7
 BuildRequires:	libtool >= 2:2
-BuildRequires:	libupnp1.6-devel
+BuildRequires:	libupnp-devel
 BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
 %{?with_matroska:BuildRequires:	matroska-foundation-devel}
@@ -66,7 +67,7 @@ Requires:	bctoolbox >= 0.4.0
 %{?with_zrtp:Requires:	bzrtp >= 1.0.6}
 %{?with_opengl:Requires:	glew >= 1.5}
 Requires:	libtheora >= 1.0-0.alpha7
-Requires:	libupnp1.6
+Requires:	libupnp
 Requires:	libvpx >= 0.9.6
 Requires:	opus >= 0.9.0
 Requires:	ortp >= 1.0.0
@@ -99,7 +100,7 @@ Requires:	bctoolbox-devel >= 0.4.0
 Requires:	ffmpeg-devel
 %{?with_opengl:Requires:	glew-devel >= 1.5}
 Requires:	libtheora-devel >= 1.0-0.alpha7
-Requires:	libupnp1.6-devel
+Requires:	libupnp-devel
 Requires:	libv4l-devel
 Requires:	libvpx-devel >= 0.9.6
 %{?with_matroska:Requires:	matroska-foundation-devel}
@@ -137,6 +138,7 @@ Statyczne biblioteki mediastreamer.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 [ ! -e gitversion.h ] && echo '#define MS2_GIT_VERSION "%{version}"' > src/gitversion.h
 
