@@ -16,13 +16,13 @@
 Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
-Version:	4.4.2
+Version:	4.5.22
 Release:	1
 License:	GPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/mediastreamer2/tags
 Source0:	https://gitlab.linphone.org/BC/public/mediastreamer2/-/archive/%{version}/mediastreamer2-%{version}.tar.bz2
-# Source0-md5:	f2fe330ad7a65dcab407c311f98fc829
+# Source0-md5:	3cdcfb0a1e3bd1b2774ca1da6316dae6
 Patch0:		build.patch
 Patch2:		libupnp-1.14.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
