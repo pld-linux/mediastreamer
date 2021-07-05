@@ -16,14 +16,14 @@
 Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
-Version:	2.16.1
-Release:	10
-License:	GPL v2+
+Version:	4.4.2
+Release:	1
+License:	GPL v3+
 Group:		Libraries
-Source0:	https://linphone.org/releases/sources/mediastreamer/%{name}-%{version}.tar.gz
-# Source0-md5:	15b8b129a922180855d04d58cdd08d43
+#Source0Download: https://gitlab.linphone.org/BC/public/mediastreamer2/tags
+Source0:	https://gitlab.linphone.org/BC/public/mediastreamer2/-/archive/%{version}/mediastreamer2-%{version}.tar.bz2
+# Source0-md5:	f2fe330ad7a65dcab407c311f98fc829
 Patch0:		build.patch
-Patch1:		libsrtp2.patch
 Patch2:		libupnp-1.14.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
@@ -32,7 +32,7 @@ BuildRequires:	SDL-devel >= 1.2.0
 %{?with_arts:BuildRequires:	artsc-devel}
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.9
-%{?with_bcg729:BuildRequires:	bcg729-devel >= 1.0}
+%{?with_bcg729:BuildRequires:	bcg729-devel >= 1.0.1}
 BuildRequires:	bctoolbox-devel >= 0.4.0
 %{?with_zrtp:BuildRequires:	bzrtp-devel >= 1.0.6}
 BuildRequires:	doxygen
@@ -43,6 +43,7 @@ BuildRequires:	gettext-tools
 BuildRequires:	intltool >= 0.40
 BuildRequires:	libgsm-devel
 %{?with_pcap:BuildRequires:	libpcap-devel}
+BuildRequires:	libstdc++-devel >= 6:5
 BuildRequires:	libtheora-devel >= 1.0-0.alpha7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libupnp-devel
@@ -62,7 +63,8 @@ BuildRequires:	speexdsp-devel >= 1.2-beta3
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xxd
-%{?with_bcg729:Requires:	bcg729 >= 1.0}
+BuildRequires:	zxing-cpp-devel
+%{?with_bcg729:Requires:	bcg729 >= 1.0.1}
 Requires:	bctoolbox >= 0.4.0
 %{?with_zrtp:Requires:	bzrtp >= 1.0.6}
 %{?with_opengl:Requires:	glew >= 1.5}
@@ -94,7 +96,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 %{?with_opengl:Requires:	OpenGL-devel}
 %{?with_alsa:Requires:	alsa-lib-devel}
-%{?with_bcg729:Requires:	bcg729-devel >= 1.0}
+%{?with_bcg729:Requires:	bcg729-devel >= 1.0.1}
 Requires:	bctoolbox-devel >= 0.4.0
 %{?with_zrtp:Requires:	bzrtp-devel >= 1.0.6}
 Requires:	ffmpeg-devel
@@ -135,9 +137,8 @@ Static mediastreamer libraries.
 Statyczne biblioteki mediastreamer.
 
 %prep
-%setup -q
+%setup -q -n mediastreamer2-%{version}
 %patch0 -p1
-%patch1 -p1
 %patch2 -p1
 
 [ ! -e gitversion.h ] && echo '#define MS2_GIT_VERSION "%{version}"' > src/gitversion.h
@@ -155,8 +156,8 @@ Statyczne biblioteki mediastreamer.
 	--disable-tests \
 	--enable-alsa%{!?with_alsa:=no} \
 	%{?with_arts:--enable-artsc} \
-	%{?with_bcg729:--enable-bcg729} \
 	--enable-external-ortp \
+	%{?with_bcg729:--enable-g729 --enable-g729bCN} \
 	%{!?with_opengl:--disable-glx} \
 	%{!?with_matroska:--disable-matroska} \
 	%{!?with_pcap:--disable-pcap} \
@@ -164,6 +165,7 @@ Statyczne biblioteki mediastreamer.
 	--enable-pulseaudio%{!?with_pulseaudio:=no} \
 	--disable-silent-rules \
 	%{?with_static_libs:--enable-static} \
+	--enable-upnp \
 	%{!?with_zrtp:--disable-zrtp} \
 	%{!?with_srtp:--with-srtp=none}
 
@@ -192,7 +194,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README.md
+%doc CHANGELOG.md README.md
 %attr(755,root,root) %{_bindir}/mediastream
 %attr(755,root,root) %{_bindir}/msaudiocmp
 %{?with_pcap:%attr(755,root,root) %{_bindir}/pcap_playback}
@@ -202,7 +204,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libmediastreamer_voip.so.10
 %dir %{_libdir}/mediastreamer
 %dir %{_libdir}/mediastreamer/plugins
-%{_pixmapsdir}/nowebcamCIF.jpg
+%{_datadir}/mediastreamer
 
 %files devel
 %defattr(644,root,root,755)
