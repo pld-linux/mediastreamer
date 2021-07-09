@@ -1,0 +1,54 @@
+
+From: Gianfranco Costamagna <costamagnagianfranco@yahoo.it>
+Author: Gianfranco Costamagna <locutusofborg@debian.org>
+Date: Thu, 31 Dec 2020 15:34:13 +0100
+Subject: [PATCH] Add pkgconfig handling for cmake.
+Forwarded: https://github.com/BelledonneCommunications/mediastreamer2/pull/27
+Last-Update: 2020-12-31
+
+---
+ CMakeLists.txt      | 9 +++++++++
+ mediastreamer.pc.in | 2 +-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 022b83113..3092755bb 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -682,8 +682,12 @@ else()
+ 	set(PACKAGE_DATA_DIR "${CMAKE_INSTALL_DATADIR}")
+ endif()
+ 
++set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
++set(includedir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR})
+ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mediastreamer-config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/mediastreamer-config.h)
+ set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/mediastreamer-config.h PROPERTIES GENERATED ON)
++configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mediastreamer.pc.in ${CMAKE_CURRENT_BINARY_DIR}/mediastreamer.pc)
++set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/mediastreamer.pc PROPERTIES GENERATED ON)
+ add_definitions("-DHAVE_CONFIG_H")
+ 
+ if(ENABLE_DOC)
+@@ -715,6 +719,11 @@ configure_package_config_file(cmake/Mediastreamer2Config.cmake.in
+ 	NO_SET_AND_CHECK_MACRO
+ )
+ 
++install(FILES
++	"${CMAKE_CURRENT_BINARY_DIR}/mediastreamer.pc"
++	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
++)
++
+ install(EXPORT ${EXPORT_TARGETS_NAME}Targets
+ 	FILE Mediastreamer2Targets.cmake
+ 	DESTINATION ${CONFIG_PACKAGE_LOCATION}
+diff --git a/mediastreamer.pc.in b/mediastreamer.pc.in
+index 3870fda82..480bb1686 100644
+--- a/mediastreamer.pc.in
++++ b/mediastreamer.pc.in
+@@ -7,5 +7,5 @@ Name: mediastreamer
+ Description: A mediastreaming library for telephony applications
+ Requires: ortp bctoolbox
+ Version: @MEDIASTREAMER_VERSION@
+-Libs: -L@libdir@ -lmediastreamer_base -lmediastreamer_voip
++Libs: -L@libdir@ -lmediastreamer
+ Cflags: -I@includedir@ @MS_PUBLIC_CFLAGS@
+
