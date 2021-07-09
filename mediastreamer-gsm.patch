@@ -1,0 +1,57 @@
+--- mediastreamer2-4.5.22/src/audiofilters/gsm.c.orig	2021-06-24 23:55:04.000000000 +0200
++++ mediastreamer2-4.5.22/src/audiofilters/gsm.c	2021-07-09 20:30:36.320023832 +0200
+@@ -18,7 +18,7 @@
+  */
+ 
+ #include "mediastreamer2/msfilter.h"
+-#include <gsm/gsm.h>
++#include <gsm.h>
+ 
+ #ifdef _MSC_VER
+ #include <malloc.h>
+#--- mediastreamer2-4.5.22/cmake/FindGSM.cmake.orig	2021-06-24 23:55:04.000000000 +0200
+#+++ mediastreamer2-4.5.22/cmake/FindGSM.cmake	2021-07-09 20:32:19.826129758 +0200
+#@@ -37,6 +37,15 @@ find_path(GSM_INCLUDE_DIRS
+# )
+# if(GSM_INCLUDE_DIRS)
+# 	set(HAVE_GSM_GSM_H 1)
+#+else()
+#+	find_path(GSM_INCLUDE_DIRS
+#+		NAMES gsm.h
+#+		HINTS _GSM_ROOT_PATHS
+#+		PATH_SUFFIXES include
+#+	)
+#+	if(GSM_INCLUDE_DIRS)
+#+		set(HAVE_GSM_H 1)
+#+	endif()
+# endif()
+# 
+# find_library(GSM_LIBRARIES
+--- mediastreamer2-4.5.22/cmake/FindGSM.cmake.orig	2021-06-24 23:55:04.000000000 +0200
++++ mediastreamer2-4.5.22/cmake/FindGSM.cmake	2021-07-09 20:42:12.959583145 +0200
+@@ -31,12 +31,12 @@ set(_GSM_ROOT_PATHS
+ )
+ 
+ find_path(GSM_INCLUDE_DIRS
+-	NAMES gsm/gsm.h
++	NAMES gsm.h
+ 	HINTS _GSM_ROOT_PATHS
+-	PATH_SUFFIXES include
++	PATH_SUFFIXES include/gsm include
+ )
+ if(GSM_INCLUDE_DIRS)
+-	set(HAVE_GSM_GSM_H 1)
++	set(HAVE_GSM_H 1)
+ endif()
+ 
+ find_library(GSM_LIBRARIES
+@@ -48,7 +48,7 @@ find_library(GSM_LIBRARIES
+ include(FindPackageHandleStandardArgs)
+ find_package_handle_standard_args(GSM
+ 	DEFAULT_MSG
+-	GSM_INCLUDE_DIRS GSM_LIBRARIES HAVE_GSM_GSM_H
++	GSM_INCLUDE_DIRS GSM_LIBRARIES HAVE_GSM_H
+ )
+ 
+-mark_as_advanced(GSM_INCLUDE_DIRS GSM_LIBRARIES HAVE_GSM_GSM_H)
++mark_as_advanced(GSM_INCLUDE_DIRS GSM_LIBRARIES HAVE_GSM_H)

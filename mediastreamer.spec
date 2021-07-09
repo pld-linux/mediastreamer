@@ -41,6 +41,7 @@ Patch3:		%{name}-cmake-datadir.patch
 Patch4:		%{name}-cmake-install-pkgconfig.patch
 Patch5:		%{name}-cmake-SDL.patch
 Patch6:		%{name}-types.patch
+Patch7:		%{name}-gsm.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_sdl:BuildRequires:	SDL-devel >= 1.2.0}
@@ -161,8 +162,7 @@ Statyczne biblioteki mediastreamer.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-
-#[ ! -e gitversion.h ] && echo '#define MS2_GIT_VERSION "%{version}"' > src/gitversion.h
+%patch7 -p1
 
 # cmake checks for python3, so don't require python 2 as well
 %{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' tools/xxd.py
