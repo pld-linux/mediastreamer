@@ -19,7 +19,7 @@
 %bcond_without	spandsp		# G726 codec support via spandsp
 # video I/O
 %bcond_without	opengl		# X11+OpenGL rendering support
-%bcond_with	sdl		# SDL support (not supported in cmake build)
+%bcond_without	sdl		# SDL support
 # video codecs
 %bcond_without	matroska	# Matroska support via libebml2/libmatroska2
 %bcond_without	zxing		# QRcode support via zxing-cpp
@@ -39,6 +39,8 @@ Patch1:		%{name}-cmake-link.patch
 Patch2:		libupnp-1.14.patch
 Patch3:		%{name}-cmake-datadir.patch
 Patch4:		%{name}-cmake-install-pkgconfig.patch
+Patch5:		%{name}-cmake-SDL.patch
+Patch6:		%{name}-types.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_sdl:BuildRequires:	SDL-devel >= 1.2.0}
@@ -157,6 +159,8 @@ Statyczne biblioteki mediastreamer.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 #[ ! -e gitversion.h ] && echo '#define MS2_GIT_VERSION "%{version}"' > src/gitversion.h
 
