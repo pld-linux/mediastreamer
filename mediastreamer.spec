@@ -48,7 +48,7 @@ URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_sdl:BuildRequires:	SDL-devel >= 1.2.0}
 %{?with_alsa:BuildRequires:	alsa-lib-devel}
 %{?with_arts:BuildRequires:	artsc-devel}
-%{?with_bcg729:BuildRequires:	bcg729-devel >= 1.0.1}
+%{?with_bcg729:BuildRequires:	bcg729-devel >= 1.1.1-1}
 BuildRequires:	bctoolbox-devel >= 0.4.0
 %{?with_zrtp:BuildRequires:	bzrtp-devel >= 4.5.15-1}
 BuildRequires:	cmake >= 3.1
@@ -81,7 +81,7 @@ BuildRequires:	speexdsp-devel >= 1.2-beta3
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
 %{?with_zxing:BuildRequires:	zxing-cpp-devel}
-%{?with_bcg729:Requires:	bcg729 >= 1.0.1}
+%{?with_bcg729:Requires:	bcg729 >= 1.1.1-1}
 Requires:	bctoolbox >= 0.4.0
 %{?with_zrtp:Requires:	bzrtp >= 4.5}
 %{?with_opengl:Requires:	glew >= 1.5}
@@ -113,7 +113,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 %{?with_opengl:Requires:	OpenGL-devel}
 %{?with_alsa:Requires:	alsa-lib-devel}
-%{?with_bcg729:Requires:	bcg729-devel >= 1.0.1}
+%{?with_bcg729:Requires:	bcg729-devel >= 1.1.1-1}
 Requires:	bctoolbox-devel >= 0.4.0
 %{?with_zrtp:Requires:	bzrtp-devel >= 4.5.15-1}
 Requires:	ffmpeg-devel
