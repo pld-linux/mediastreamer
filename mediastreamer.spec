@@ -1,6 +1,3 @@
-# TODO:
-# - BV16 (https://gitlab.linphone.org/BC/public/external/bv16-floatingpoint or BroadVoice16OpenSource.v1.2.zip from Broadcom)
-# - bcmatroska2
 #
 # Conditional build:
 %bcond_with	pcap		# audio playing from PCAP files
@@ -16,6 +13,7 @@
 %bcond_without	pulseaudio	# PulseAudio sound I/O support
 # audio codecs
 %bcond_without	bcg729		# support for G279AnnexB in RTC3389 implementation of Comfort Noise Payload
+%bcond_without	bv16		# BV16 codec support
 %bcond_without	spandsp		# G726 codec support via spandsp
 # video I/O
 %bcond_without	opengl		# X11+OpenGL rendering support
@@ -51,6 +49,7 @@ URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_bcg729:BuildRequires:	bcg729-devel >= 1.1.1-1}
 %{?with_matroska:BuildRequires:	bcmatroska2-devel}
 BuildRequires:	bctoolbox-devel >= 0.4.0
+%{?with_bv16:BuildRequires:	bv16-floatingpoint-devel}
 %{?with_zrtp:BuildRequires:	bzrtp-devel >= 4.5.15-1}
 BuildRequires:	cmake >= 3.1
 BuildRequires:	doxygen
@@ -116,6 +115,7 @@ Requires:	%{name} = %{version}-%{release}
 %{?with_bcg729:Requires:	bcg729-devel >= 1.1.1-1}
 %{?with_matroska:Requires:	bcmatroska2-devel}
 Requires:	bctoolbox-devel >= 0.4.0
+%{?with_bv16:Requires:	bv16-floatingpoint-devel}
 %{?with_zrtp:Requires:	bzrtp-devel >= 4.5.15-1}
 Requires:	ffmpeg-devel
 %{?with_opengl:Requires:	glew-devel >= 1.5}
@@ -179,6 +179,7 @@ CPPFLAGS="%{rpmcppflags} -DENABLE_NLS=1 -DGETTEXT_PACKAGE=\"mediastreamer\" -DLO
 	-DCMAKE_INSTALL_LIBDIR=%{_lib} \
 	%{!?with_alsa:-DENABLE_ALSA=OFF} \
 	%{?with_arts:-DENABLE_ARTSC=ON} \
+	%{!?with_bv16:-DENABLE_BV16=OFF} \
 	%{?with_spandsp:-DENABLE_G726=ON} \
 	%{!?with_bcg729:-DENABLE_G729=OFF} \
 	%{?with_bcg729:-DENABLE_G729B_CNG=ON} \
