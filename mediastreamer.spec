@@ -21,7 +21,7 @@
 %bcond_without	opengl		# X11+OpenGL rendering support
 %bcond_without	sdl		# SDL support
 # video codecs
-%bcond_without	matroska	# Matroska support via libebml2/libmatroska2
+%bcond_without	matroska	# Matroska support via bcmatroska2
 %bcond_without	zxing		# QRcode support via zxing-cpp
 #
 Summary:	Audio/Video real-time streaming
@@ -49,6 +49,7 @@ URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_alsa:BuildRequires:	alsa-lib-devel}
 %{?with_arts:BuildRequires:	artsc-devel}
 %{?with_bcg729:BuildRequires:	bcg729-devel >= 1.1.1-1}
+%{?with_matroska:BuildRequires:	bcmatroska2-devel}
 BuildRequires:	bctoolbox-devel >= 0.4.0
 %{?with_zrtp:BuildRequires:	bzrtp-devel >= 4.5.15-1}
 BuildRequires:	cmake >= 3.1
@@ -66,7 +67,6 @@ BuildRequires:	libtheora-devel >= 1.0-0.alpha7
 BuildRequires:	libupnp-devel >= 1.8
 BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
-%{?with_matroska:BuildRequires:	matroska-foundation-devel}
 BuildRequires:	opus-devel >= 0.9.0
 BuildRequires:	ortp-devel >= 4.5.15-1
 BuildRequires:	pkgconfig
@@ -114,6 +114,7 @@ Requires:	%{name} = %{version}-%{release}
 %{?with_opengl:Requires:	OpenGL-devel}
 %{?with_alsa:Requires:	alsa-lib-devel}
 %{?with_bcg729:Requires:	bcg729-devel >= 1.1.1-1}
+%{?with_matroska:Requires:	bcmatroska2-devel}
 Requires:	bctoolbox-devel >= 0.4.0
 %{?with_zrtp:Requires:	bzrtp-devel >= 4.5.15-1}
 Requires:	ffmpeg-devel
@@ -122,7 +123,6 @@ Requires:	libtheora-devel >= 1.0-0.alpha7
 Requires:	libupnp-devel >= 1.8
 Requires:	libv4l-devel
 Requires:	libvpx-devel >= 0.9.6
-%{?with_matroska:Requires:	matroska-foundation-devel}
 Requires:	opus-devel >= 0.9.0
 Requires:	ortp-devel >= 4.5.15-1
 %{?with_portaudio:Requires:	portaudio-devel}
