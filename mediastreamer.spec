@@ -42,6 +42,7 @@ Patch4:		%{name}-cmake-install-pkgconfig.patch
 Patch5:		%{name}-cmake-SDL.patch
 Patch6:		%{name}-types.patch
 Patch7:		%{name}-gsm.patch
+Patch8:		%{name}-cmake-upnp.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_sdl:BuildRequires:	SDL-devel >= 1.2.0}
@@ -62,8 +63,7 @@ BuildRequires:	libjpeg-turbo-devel
 %{?with_pcap:BuildRequires:	libpcap-devel}
 BuildRequires:	libstdc++-devel >= 6:5
 BuildRequires:	libtheora-devel >= 1.0-0.alpha7
-# upnp not included in cmake
-#BuildRequires:	libupnp-devel >= 1.8
+BuildRequires:	libupnp-devel >= 1.8
 BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
 %{?with_matroska:BuildRequires:	matroska-foundation-devel}
@@ -119,7 +119,7 @@ Requires:	bctoolbox-devel >= 0.4.0
 Requires:	ffmpeg-devel
 %{?with_opengl:Requires:	glew-devel >= 1.5}
 Requires:	libtheora-devel >= 1.0-0.alpha7
-#Requires:	libupnp-devel
+Requires:	libupnp-devel >= 1.8
 Requires:	libv4l-devel
 Requires:	libvpx-devel >= 0.9.6
 %{?with_matroska:Requires:	matroska-foundation-devel}
@@ -163,6 +163,7 @@ Statyczne biblioteki mediastreamer.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 # cmake checks for python3, so don't require python 2 as well
 %{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' tools/xxd.py
