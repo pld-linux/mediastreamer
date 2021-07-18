@@ -48,7 +48,7 @@ BuildRequires:	libtool >= 2:2
 BuildRequires:	libupnp-devel
 BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
-%{?with_matroska:BuildRequires:	matroska-foundation-devel}
+%{?with_matroska:BuildRequires:	bcmatroska2-devel}
 BuildRequires:	opus-devel >= 0.9.0
 BuildRequires:	ortp-devel >= 1.0.0
 BuildRequires:	pkgconfig
@@ -103,7 +103,7 @@ Requires:	libtheora-devel >= 1.0-0.alpha7
 Requires:	libupnp-devel
 Requires:	libv4l-devel
 Requires:	libvpx-devel >= 0.9.6
-%{?with_matroska:Requires:	matroska-foundation-devel}
+%{?with_matroska:Requires:	bcmatroska2-devel}
 Requires:	opus-devel >= 0.9.0
 Requires:	ortp-devel >= 1.0.0
 %{?with_portaudio:Requires:	portaudio-devel}
