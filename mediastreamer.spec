@@ -41,6 +41,8 @@ Patch5:		%{name}-cmake-SDL.patch
 Patch6:		%{name}-types.patch
 Patch7:		%{name}-gsm.patch
 Patch8:		%{name}-cmake-upnp.patch
+Patch9:		%{name}-bounds.patch
+Patch10:	%{name}-gcc.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_sdl:BuildRequires:	SDL-devel >= 1.2.0}
@@ -164,6 +166,8 @@ Statyczne biblioteki mediastreamer.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
+%patch10 -p1
 
 # cmake checks for python3, so don't require python 2 as well
 %{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' tools/xxd.py
