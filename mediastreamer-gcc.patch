@@ -1,0 +1,10 @@
+--- mediastreamer2-4.5.22/src/utils/mkv_reader.cpp.orig	2021-06-24 23:55:04.000000000 +0200
++++ mediastreamer2-4.5.22/src/utils/mkv_reader.cpp	2021-07-18 09:55:27.905014183 +0200
+@@ -20,6 +20,7 @@
+ #include <algorithm>
+ #include <array>
+ #include <cwchar>
++#include <limits>
+ #include <list>
+ #include <memory>
+ #include <vector>

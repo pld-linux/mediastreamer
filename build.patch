@@ -13,29 +13,121 @@
 @@ -1,5 +1,5 @@
  dnl Process this file with autoconf to produce a configure script.
 -AC_INIT([mediastreamer],[2.15.1])
-+AC_INIT([mediastreamer],[2.16.1])
++AC_INIT([mediastreamer],[4.5.22])
  
  AC_MSG_NOTICE([$PACKAGE_NAME-$PACKAGE_VERSION		A mediastreaming library for telephony application.])
  AC_MSG_NOTICE([licensed under the terms of the General Public License (GPL)])
---- mediastreamer-2.16.1/src/Makefile.am~	2017-04-06 11:27:56.000000000 +0200
-+++ mediastreamer-2.16.1/src/Makefile.am	2018-09-26 12:58:10.680232083 +0200
-@@ -467,7 +467,7 @@ endif
+--- mediastreamer2-4.5.22/src/Makefile.am.orig	2021-06-24 23:55:04.000000000 +0200
++++ mediastreamer2-4.5.22/src/Makefile.am	2021-07-05 18:00:26.701108988 +0200
+@@ -83,6 +83,7 @@ libmediastreamer_base_la_SOURCES=	base/m
+ 					base/mswebcam.c \
+ 					base/mtu.c \
+ 					base/msasync.c \
++					utils/box-plot.c \
+ 					otherfilters/void.c \
+ 					otherfilters/itc.c
+ libmediastreamer_voip_la_SOURCES=
+@@ -118,6 +119,8 @@ libmediastreamer_voip_la_SOURCES+=	voip/
+ 					voip/bandwidthcontroller.c \
+ 					crypto/zrtp.c \
+ 					voip/stun.c \
++					voip/offeranswer.c \
++					voip/turn_tcp.cpp \
+ 					crypto/ms_srtp.c \
+ 					crypto/dtls_srtp.c \
+ 					voip/msiframerequestslimiter.c \
+@@ -153,6 +156,8 @@ libmediastreamer_voip_la_SOURCES+=	audio
+ 					utils/g722.h \
+ 					utils/g722_decode.c \
+ 					utils/g722_encode.c \
++					utils/filter-wrapper/decoding-filter-wrapper.cpp \
++					utils/filter-wrapper/encoding-filter-wrapper.cpp \
+ 					audiofilters/msg722.c \
+ 					audiofilters/l16.c \
+ 					audiofilters/genericplc.h \
+@@ -258,7 +263,7 @@ if BUILD_V4L2
+ libmediastreamer_voip_la_SOURCES+=	videofilters/msv4l2.c
+ endif
+ 
+-if BUILD_WIN32 AND NOT(ENABLE_MICROSOFT_STORE_APP)
++if BUILD_WIN32
+ libmediastreamer_voip_la_SOURCES+=	videofilters/drawdib-display.c
+ endif
+ 
+@@ -271,17 +276,17 @@ libmediastreamer_voip_la_SOURCES+=	video
+ endif
+ 
+ if BUILD_MATROSKA
+-libmediastreamer_voip_la_SOURCES+=	videofilters/mkv.c \
+-					utils/mkv_reader.c utils/mkv_reader.h
++libmediastreamer_voip_la_SOURCES+=	videofilters/mkv.cpp \
++					utils/mkv_reader.cpp utils/mkv_reader.h
+ endif
+ 
+ if BUILD_AVCODEC
+ libmediastreamer_voip_la_SOURCES+=	videofilters/videoenc.c \
+ 					videofilters/videodec.c \
+-					utils/swscale.h \
+ 					utils/ffmpeg-priv.h \
+ 					utils/ffmpeg-priv.c \
+-					videofilters/h264dec.c \
++					utils/jpgloader-ffmpeg.c \
++					videofilters/h264dec.cpp \
+ 					videofilters/ffmpegjpegwriter.c
+ endif
+ 
+@@ -304,20 +309,31 @@ libmediastreamer_voip_la_SOURCES+=	voip/
+ 					voip/msvideoqualitycontroller.c \
+ 					voip/msvideo_neon.c \
+ 					voip/msvideo_neon.h \
+-					voip/rfc3984.c \
+ 					voip/videostarter.c \
+ 					voip/vp8rtpfmt.c \
+ 					voip/vp8rtpfmt.h \
+ 					videofilters/mire.c \
+-					videofilters/nowebcam.c videofilters/ffmpegnowebcam.c voip/nowebcam.h \
++					videofilters/nowebcam.c voip/nowebcam.h \
+ 					videofilters/extdisplay.c \
+ 					utils/bits_rw.c \
+ 					utils/x11_helper.c \
+ 					utils/stream_regulator.c utils/stream_regulator.h \
+-					utils/h264utils.c utils/h264utils.h \
+ 					voip/layouts.c voip/layouts.h \
+ 					voip/video_preset_high_fps.c
+ 
++libmediastreamer_voip_la_SOURCES+=	voip/h26x/h26x-encoder-filter.cpp \
++					voip/h26x/h26x-decoder-filter.cpp \
++					voip/h26x/h26x-utils.cpp \
++					voip/h26x/h264-nal-packer.cpp \
++					voip/h26x/h264-nal-unpacker.cpp \
++					voip/h26x/h264-utils.cpp \
++					voip/h26x/h265-nal-packer.cpp \
++					voip/h26x/h265-nal-unpacker.cpp \
++					voip/h26x/h265-utils.cpp \
++					voip/h26x/nal-packer.cpp \
++					voip/h26x/nal-unpacker.cpp \
++					voip/h26x/rfc3984.cpp
++
+ if ORTP_ENABLED
+ libmediastreamer_voip_la_SOURCES+=	voip/videostream.c
+ endif
+@@ -469,7 +485,7 @@ endif
  
  AM_OBJCFLAGS=$(AM_CFLAGS)
  
 -imgdir=$(datadir)/images/
-+imgdir=$(datadir)/pixmaps/
++imgdir=$(pkgdatadir)/images/
  
  img_DATA=voip/nowebcamCIF.jpg
  
---- mediastreamer-2.16.1/src/base/msfactory.c~	2017-07-20 15:56:05.000000000 +0200
-+++ mediastreamer-2.16.1/src/base/msfactory.c	2018-09-26 13:00:39.631224915 +0200
-@@ -231,7 +231,7 @@ void ms_factory_init(MSFactory *obj){
+--- mediastreamer2-4.4.2/src/base/msfactory.c.orig	2020-09-24 11:44:00.000000000 +0200
++++ mediastreamer2-4.4.2/src/base/msfactory.c	2020-09-26 18:00:06.215992977 +0200
+@@ -236,7 +236,7 @@
  	ms_message("ms_factory_init() done: platform_tags=%s", tags);
  	ms_free(tags);
- 	obj->echo_canceller_filtername = ms_strdup("MSWebRTCAECM");
+ 
 -	obj->image_resources_dir = bctbx_strdup_printf("%s/images", PACKAGE_DATA_DIR);
-+	obj->image_resources_dir = bctbx_strdup_printf("/usr/share/pixmaps");
++	obj->image_resources_dir = bctbx_strdup_printf("%s/mediastreamer/images", PACKAGE_DATA_DIR);
  }
  
  

@@ -1,6 +1,5 @@
-diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd.c mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd.c
---- mediastreamer-2.16.1/src/upnp/upnp_igd.c	2017-04-06 11:27:56.000000000 +0200
-+++ mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd.c	2020-10-24 09:56:24.947219573 +0200
+--- mediastreamer2-4.4.2/src/upnp/upnp_igd.c.orig	2020-09-24 11:44:00.000000000 +0200
++++ mediastreamer2-4.4.2/src/upnp/upnp_igd.c	2020-09-27 09:49:46.143972883 +0200
 @@ -395,7 +395,7 @@
   *   d_event  -- event associated with the new device
   *
@@ -109,7 +108,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd.c mediastreamer-2.16.1-upnp-1.14
 +    			upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error in  Action Complete Callback -- %d", UpnpActionComplete_get_ErrCode(a_event));
      		} else {
 -    			upnp_igd_handle_send_action(igd_ctxt, UPNP_STRING(a_event->CtrlUrl), a_event->ActionRequest, a_event->ActionResult);
-+    			upnp_igd_handle_send_action(igd_ctxt, UPNP_STRING(UpnpActionComplete_get_CtrlUrl(a_event)), UpnpActionComplete_get_ActionRequest(a_event), UpnpActionComplete_get_ActionResult(a_event));
++    			upnp_igd_handle_send_action(igd_ctxt, UpnpActionComplete_get_CtrlUrl_cstr(a_event), UpnpActionComplete_get_ActionRequest(a_event), UpnpActionComplete_get_ActionResult(a_event));
      		}
      	}
      	break;
@@ -123,7 +122,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd.c mediastreamer-2.16.1-upnp-1.14
 +    			upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error in Get Var Complete Callback -- %d", UpnpStateVarComplete_get_ErrCode(sv_event));
      		} else {
 -    			upnp_igd_handle_get_var(igd_ctxt, UPNP_STRING(sv_event->CtrlUrl), sv_event->StateVarName, sv_event->CurrentVal);
-+    			upnp_igd_handle_get_var(igd_ctxt, UPNP_STRING(UpnpStateVarComplete_get_CtrlUrl(sv_event)), UpnpStateVarComplete_get_StateVarName_cstr(sv_event), UpnpStateVarComplete_get_CurrentVal_cstr(sv_event));
++    			upnp_igd_handle_get_var(igd_ctxt, UpnpStateVarComplete_get_CtrlUrl_cstr(sv_event), UpnpStateVarComplete_get_StateVarName_cstr(sv_event), UpnpStateVarComplete_get_CurrentVal(sv_event));
      		}
      	}
      	break;
@@ -148,7 +147,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd.c mediastreamer-2.16.1-upnp-1.14
 +    			upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error in Event Subscribe Callback -- %d", UpnpEventSubscribe_get_ErrCode(es_event));
      		} else {
 -    			upnp_igd_handle_subscribe_update(igd_ctxt, UPNP_STRING(es_event->PublisherUrl), es_event->Sid, es_event->TimeOut);
-+    			upnp_igd_handle_subscribe_update(igd_ctxt, UPNP_STRING(UpnpEventSubscribe_get_PublisherUrl(es_event)), UpnpEventSubscribe_get_SID_cstr(es_event), UpnpEventSubscribe_get_TimeOut(es_event));
++    			upnp_igd_handle_subscribe_update(igd_ctxt, UpnpEventSubscribe_get_PublisherUrl_cstr(es_event), UpnpEventSubscribe_get_SID_cstr(es_event), UpnpEventSubscribe_get_TimeOut(es_event));
      		}
      	}
      	break;
@@ -161,43 +160,85 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd.c mediastreamer-2.16.1-upnp-1.14
      		int ret;
  
 -    		ret = UpnpSubscribe(igd_ctxt->upnp_handle, UPNP_STRING(es_event->PublisherUrl), &TimeOut, newSID);
-+    		ret = UpnpSubscribe(igd_ctxt->upnp_handle, UPNP_STRING(UpnpEventSubscribe_get_PublisherUrl(es_event)), &TimeOut, newSID);
++    		ret = UpnpSubscribe(igd_ctxt->upnp_handle, UpnpEventSubscribe_get_PublisherUrl_cstr(es_event), &TimeOut, newSID);
      		if (ret == UPNP_E_SUCCESS) {
      			upnp_igd_print(igd_ctxt, UPNP_IGD_DEBUG, "Subscribed to EventURL with SID=%s", newSID);
 -    			upnp_igd_handle_subscribe_update(igd_ctxt, UPNP_STRING(es_event->PublisherUrl), newSID, TimeOut);
-+    			upnp_igd_handle_subscribe_update(igd_ctxt, UPNP_STRING(UpnpEventSubscribe_get_PublisherUrl(es_event)), newSID, TimeOut);
++    			upnp_igd_handle_subscribe_update(igd_ctxt, UpnpEventSubscribe_get_PublisherUrl_cstr(es_event), newSID, TimeOut);
      		} else {
      			upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "Error Subscribing to EventURL -- %d", ret);
      		}
-@@ -1070,9 +1070,9 @@
+@@ -996,10 +996,10 @@
+  *   cookie    -- The cookie pass in cb_fct or print_fct
+  *
+  ********************************************************************************/
+-upnp_igd_context* upnp_igd_create(upnp_igd_callback_function cb_fct, upnp_igd_print_function print_fct, const char *address, void *cookie) {
++upnp_igd_context* upnp_igd_create(upnp_igd_callback_function cb_fct, upnp_igd_print_function print_fct, const char *interface, void *cookie) {
+ 	int ret;
+ 	unsigned short port = 0;
+-	const char *ip_address = address;
++	const char *ip_address = NULL;
+ 	upnp_igd_context *igd_ctxt = (upnp_igd_context*)malloc(sizeof(upnp_igd_context));
+ 	igd_ctxt->devices = NULL;
+ 	igd_ctxt->callback_fct = cb_fct;
+@@ -1068,9 +1068,9 @@
+ 		ithread_cond_init(&igd_ctxt->client_cond, NULL);
+ 	}
  
- 	upnp_igd_print(igd_ctxt, UPNP_IGD_DEBUG, "Initializing uPnP IGD with ipaddress:%s port:%u", ip_address ? ip_address : "{NULL}", port);
+-	upnp_igd_print(igd_ctxt, UPNP_IGD_DEBUG, "Initializing uPnP IGD with ipaddress:%s port:%u", ip_address ? ip_address : "{NULL}", port);
++	upnp_igd_print(igd_ctxt, UPNP_IGD_DEBUG, "Initializing uPnP IGD with interface:%s port:%u", interface ? interface : "{NULL}", port);
  
 -	ret = UpnpInit(ip_address, port);
-+	ret = UpnpInit2(ip_address, port);
++	ret = UpnpInit2(interface, port);
  	if (ret != UPNP_E_SUCCESS) {
--		upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "UpnpInit() Error: %d", ret);
-+		upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "UpnpInit2() Error: %d", ret);
+ 		upnp_igd_print(igd_ctxt, UPNP_IGD_ERROR, "UpnpInit() Error: %d", ret);
  		UpnpFinish();
- 		ithread_mutex_destroy(&igd_ctxt->print_mutex);
- 		ithread_mutex_destroy(&igd_ctxt->devices_mutex);
-diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_cmd.c mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd_cmd.c
---- mediastreamer-2.16.1/src/upnp/upnp_igd_cmd.c	2017-04-06 11:27:56.000000000 +0200
-+++ mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd_cmd.c	2020-10-24 09:59:22.519393813 +0200
+@@ -1085,9 +1085,7 @@
+ 		free(igd_ctxt);
+ 		return NULL;
+ 	}
+-	if (!ip_address) {
+-		ip_address = UpnpGetServerIpAddress();
+-	}
++	ip_address = UpnpGetServerIp6Address();
+ 	if (!port) {
+ 		port = UpnpGetServerPort();
+ 	}
+--- mediastreamer2-4.4.2/src/upnp/upnp_igd_cmd.c.orig	2020-09-24 11:44:00.000000000 +0200
++++ mediastreamer2-4.4.2/src/upnp/upnp_igd_cmd.c	2020-09-27 10:01:04.473631389 +0200
+@@ -95,7 +95,7 @@
+ 	return 0;
+ }
+ 
+-int upnp_igd_port_mapping_callback(Upnp_EventType event_type, void* event, void *cookie) {
++int upnp_igd_port_mapping_callback(Upnp_EventType event_type, const void* event, void *cookie) {
+ 	int ret = 1;
+ 	upnp_igd_port_mapping_context *igd_port_mapping_ctxt = (upnp_igd_port_mapping_context*)cookie;
+ 	upnp_context_add_client(igd_port_mapping_ctxt->igd_ctxt);
 @@ -103,8 +103,8 @@
  
  	switch(event_type) {
  		case UPNP_CONTROL_ACTION_COMPLETE: {
 -		struct Upnp_Action_Complete *a_event = (struct Upnp_Action_Complete *)event;
 -			upnp_igd_port_mapping_handle_action(igd_port_mapping_ctxt, a_event->ErrCode, UPNP_STRING(a_event->CtrlUrl), a_event->ActionRequest, a_event->ActionResult);
-+		struct UpnpActionComplete *a_event = (UpnpActionComplete *)event;
-+			upnp_igd_port_mapping_handle_action(igd_port_mapping_ctxt, UpnpActionComplete_get_ErrCode(a_event), UPNP_STRING(UpnpActionComplete_get_CtrlUrl(a_event)), UpnpActionComplete_get_ActionRequest(a_event), UpnpActionComplete_get_ActionResult(a_event));
++		UpnpActionComplete *a_event = (UpnpActionComplete *)event;
++			upnp_igd_port_mapping_handle_action(igd_port_mapping_ctxt, UpnpActionComplete_get_ErrCode(a_event), UpnpActionComplete_get_CtrlUrl_cstr(a_event), UpnpActionComplete_get_ActionRequest(a_event), UpnpActionComplete_get_ActionResult(a_event));
  		}
  		break;
  
-diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_private.h mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd_private.h
---- mediastreamer-2.16.1/src/upnp/upnp_igd_private.h	2017-04-06 11:27:56.000000000 +0200
-+++ mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd_private.h	2020-10-24 09:56:45.997524838 +0200
+--- mediastreamer2-4.4.2/include/mediastreamer2/upnp_igd.h.orig	2020-09-24 11:44:00.000000000 +0200
++++ mediastreamer2-4.4.2/include/mediastreamer2/upnp_igd.h	2020-09-27 09:50:51.076954444 +0200
+@@ -72,7 +72,7 @@
+ 
+ typedef struct _upnp_igd_context upnp_igd_context;
+ 
+-MS2_PUBLIC upnp_igd_context* upnp_igd_create(upnp_igd_callback_function cb_fct, upnp_igd_print_function print_fct, const char* address, void *cookie);
++MS2_PUBLIC upnp_igd_context* upnp_igd_create(upnp_igd_callback_function cb_fct, upnp_igd_print_function print_fct, const char* interface, void *cookie);
+ MS2_PUBLIC int upnp_igd_start(upnp_igd_context*igd_ctxt);
+ int upnp_igd_is_started(upnp_igd_context *igd_ctxt);
+ int upnp_igd_stop(upnp_igd_context*igd_ctxt);
+--- mediastreamer2-4.4.2/src/upnp/upnp_igd_private.h.orig	2020-09-24 11:44:00.000000000 +0200
++++ mediastreamer2-4.4.2/src/upnp/upnp_igd_private.h	2020-09-27 09:42:32.032991330 +0200
 @@ -144,7 +144,7 @@
  void upnp_context_handle_callbacks(upnp_igd_context *igd_ctx);
  void upnp_context_free_callbacks(upnp_igd_context *igd_ctx);
@@ -207,9 +248,8 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_private.h mediastreamer-2.16.1-u
  int upnp_igd_send_action(upnp_igd_context* igd_ctxt, upnp_igd_device_node *device_node, int service,
  		const char *actionname, const char **param_name, const char **param_val, int param_count,
  		Upnp_FunPtr fun, const void *cookie);
-diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd_utils.c
---- mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c	2017-04-06 11:27:56.000000000 +0200
-+++ mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd_utils.c	2020-10-24 10:41:27.658376656 +0200
+--- mediastreamer2-4.4.2/src/upnp/upnp_igd_utils.c.orig	2020-09-24 11:44:00.000000000 +0200
++++ mediastreamer2-4.4.2/src/upnp/upnp_igd_utils.c	2020-09-27 10:57:56.005149537 +0200
 @@ -178,7 +178,7 @@
  	}
  }
@@ -248,14 +288,13 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  		break;
  	}
  	case UPNP_DISCOVERY_SEARCH_TIMEOUT:
-@@ -207,18 +207,18 @@
+@@ -207,18 +207,17 @@
  		break;
  	/* SOAP */
  	case UPNP_CONTROL_ACTION_REQUEST: {
 -		struct Upnp_Action_Request *a_event =
 -			(struct Upnp_Action_Request *)Event;
-+		UpnpActionRequest *a_event =
-+			(UpnpActionRequest *)Event;
++		UpnpActionRequest *a_event = (UpnpActionRequest *)Event;
  		char *xmlbuff = NULL;
  
  		upnp_igd_print(igd_ctxt, level, "ErrCode     =  %s(%d)",
@@ -268,7 +307,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
 -			xmlbuff = ixmlPrintNode((IXML_Node *)a_event->ActionRequest);
 +			UpnpGetErrorMessage(UpnpActionRequest_get_ErrCode(a_event)), UpnpActionRequest_get_ErrCode(a_event));
 +		upnp_igd_print(igd_ctxt, level, "ErrStr      =  %s", UpnpActionRequest_get_ErrStr_cstr(a_event));
-+		upnp_igd_print(igd_ctxt, level, "ActionName  =  %s", UpnpActionRequest_get_ActionName(a_event));
++		upnp_igd_print(igd_ctxt, level, "ActionName  =  %s", UpnpActionRequest_get_ActionName_cstr(a_event));
 +		upnp_igd_print(igd_ctxt, level, "UDN         =  %s", UpnpActionRequest_get_DevUDN_cstr(a_event));
 +		upnp_igd_print(igd_ctxt, level, "ServiceID   =  %s", UpnpActionRequest_get_ServiceID_cstr(a_event));
 +		if (UpnpActionRequest_get_ActionRequest(a_event)) {
@@ -276,7 +315,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  			if (xmlbuff) {
  				upnp_igd_print(igd_ctxt, level, "ActRequest  =  %s", xmlbuff);
  				ixmlFreeDOMString(xmlbuff);
-@@ -227,8 +227,8 @@
+@@ -227,8 +226,8 @@
  		} else {
  			upnp_igd_print(igd_ctxt, level, "ActRequest  =  (null)");
  		}
@@ -287,14 +326,13 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  			if (xmlbuff) {
  				upnp_igd_print(igd_ctxt, level, "ActResult   =  %s", xmlbuff);
  				ixmlFreeDOMString(xmlbuff);
-@@ -240,15 +240,15 @@
+@@ -240,15 +239,14 @@
  		break;
  	}
  	case UPNP_CONTROL_ACTION_COMPLETE: {
 -		struct Upnp_Action_Complete *a_event =
 -			(struct Upnp_Action_Complete *)Event;
-+		UpnpActionComplete *a_event =
-+			(UpnpActionComplete *)Event;
++		UpnpActionComplete *a_event = (UpnpActionComplete *)Event;
  		char *xmlbuff = NULL;
  
  		upnp_igd_print(igd_ctxt, level, "ErrCode     =  %s(%d)",
@@ -309,7 +347,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  			if (xmlbuff) {
  				upnp_igd_print(igd_ctxt, level, "ActRequest  =  %s", xmlbuff);
  				ixmlFreeDOMString(xmlbuff);
-@@ -257,8 +257,8 @@
+@@ -257,8 +255,8 @@
  		} else {
  			upnp_igd_print(igd_ctxt, level, "ActRequest  =  (null)");
  		}
@@ -320,14 +358,13 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  			if (xmlbuff) {
  				upnp_igd_print(igd_ctxt, level, "ActResult   =  %s", xmlbuff);
  				ixmlFreeDOMString(xmlbuff);
-@@ -270,83 +270,83 @@
+@@ -270,83 +268,77 @@
  		break;
  	}
  	case UPNP_CONTROL_GET_VAR_REQUEST: {
 -		struct Upnp_State_Var_Request *sv_event =
 -			(struct Upnp_State_Var_Request *)Event;
-+		UpnpStateVarRequest *sv_event =
-+			(UpnpStateVarRequest *)Event;
++		UpnpStateVarRequest *sv_event = (UpnpStateVarRequest *)Event;
  
  		upnp_igd_print(igd_ctxt, level, "ErrCode     =  %s(%d)",
 -			UpnpGetErrorMessage(sv_event->ErrCode), sv_event->ErrCode);
@@ -347,8 +384,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  	case UPNP_CONTROL_GET_VAR_COMPLETE: {
 -		struct Upnp_State_Var_Complete *sv_event =
 -			(struct Upnp_State_Var_Complete *)Event;
-+		UpnpStateVarComplete *sv_event =
-+			(UpnpStateVarComplete *)Event;
++		UpnpStateVarComplete *sv_event = (UpnpStateVarComplete *)Event;
  
  		upnp_igd_print(igd_ctxt, level, "ErrCode     =  %s(%d)",
 -			UpnpGetErrorMessage(sv_event->ErrCode), sv_event->ErrCode);
@@ -365,8 +401,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  	case UPNP_EVENT_SUBSCRIPTION_REQUEST: {
 -		struct Upnp_Subscription_Request *sr_event =
 -			(struct Upnp_Subscription_Request *)Event;
-+		UpnpSubscriptionRequest *sr_event =
-+			(UpnpSubscriptionRequest *)Event;
++		UpnpSubscriptionRequest *sr_event = (UpnpSubscriptionRequest *)Event;
  
 -		upnp_igd_print(igd_ctxt, level, "ServiceID   =  %s", sr_event->ServiceId);
 -		upnp_igd_print(igd_ctxt, level, "UDN         =  %s", sr_event->UDN);
@@ -385,7 +420,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
 -		upnp_igd_print(igd_ctxt, level, "EventKey    =  %d",	e_event->EventKey);
 -		xmlbuff = ixmlPrintNode((IXML_Node *)e_event->ChangedVariables);
 +		upnp_igd_print(igd_ctxt, level, "SID         =  %s", UpnpEvent_get_SID_cstr(e_event));
-+		upnp_igd_print(igd_ctxt, level, "EventKey    =  %d",	UpnpEvent_get_EventKey(e_event));
++		upnp_igd_print(igd_ctxt, level, "EventKey    =  %d", UpnpEvent_get_EventKey(e_event));
 +		xmlbuff = ixmlPrintNode((IXML_Node *)UpnpEvent_get_ChangedVariables(e_event));
  		upnp_igd_print(igd_ctxt, level, "ChangedVars =  %s", xmlbuff);
  		ixmlFreeDOMString(xmlbuff);
@@ -395,8 +430,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  	case UPNP_EVENT_RENEWAL_COMPLETE: {
 -		struct Upnp_Event_Subscribe *es_event =
 -			(struct Upnp_Event_Subscribe *)Event;
-+		UpnpEventSubscribe *es_event =
-+			(UpnpEventSubscribe *)Event;
++		UpnpEventSubscribe *es_event = (UpnpEventSubscribe *)Event;
  
 -		upnp_igd_print(igd_ctxt, level, "SID         =  %s", es_event->Sid);
 +		upnp_igd_print(igd_ctxt, level, "SID         =  %s", UpnpEventSubscribe_get_SID_cstr(es_event));
@@ -411,8 +445,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  	case UPNP_EVENT_UNSUBSCRIBE_COMPLETE: {
 -		struct Upnp_Event_Subscribe *es_event =
 -			(struct Upnp_Event_Subscribe *)Event;
-+		UpnpEventSubscribe *es_event =
-+			(UpnpEventSubscribe *)Event;
++		UpnpEventSubscribe *es_event = (UpnpEventSubscribe *)Event;
  
 -		upnp_igd_print(igd_ctxt, level, "SID         =  %s", es_event->Sid);
 +		upnp_igd_print(igd_ctxt, level, "SID         =  %s", UpnpEventSubscribe_get_SID_cstr(es_event));
@@ -429,8 +462,7 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  	case UPNP_EVENT_SUBSCRIPTION_EXPIRED: {
 -		struct Upnp_Event_Subscribe *es_event =
 -			(struct Upnp_Event_Subscribe *)Event;
-+		UpnpEventSubscribe *es_event =
-+			(UpnpEventSubscribe *)Event;
++		UpnpEventSubscribe *es_event = (UpnpEventSubscribe *)Event;
  
 -		upnp_igd_print(igd_ctxt, level, "SID         =  %s", es_event->Sid);
 +		upnp_igd_print(igd_ctxt, level, "SID         =  %s", UpnpEventSubscribe_get_SID_cstr(es_event));
@@ -444,9 +476,8 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.c mediastreamer-2.16.1-upn
  		break;
  	}
  	}
-diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.h mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd_utils.h
---- mediastreamer-2.16.1/src/upnp/upnp_igd_utils.h	2017-04-06 11:27:56.000000000 +0200
-+++ mediastreamer-2.16.1-upnp-1.14/src/upnp/upnp_igd_utils.h	2020-10-24 09:57:35.918190644 +0200
+--- mediastreamer2-4.4.2/src/upnp/upnp_igd_utils.h.orig	2020-09-24 11:44:00.000000000 +0200
++++ mediastreamer2-4.4.2/src/upnp/upnp_igd_utils.h	2020-09-27 09:51:21.930120631 +0200
 @@ -39,7 +39,7 @@
  
  void upnp_igd_print(upnp_igd_context *uIGD, upnp_igd_print_level level, const char *fmt, ...);
@@ -456,3 +487,23 @@ diff -ur mediastreamer-2.16.1/src/upnp/upnp_igd_utils.h mediastreamer-2.16.1-upn
  char *upnp_igd_get_first_document_item(upnp_igd_context *uIGD, IXML_Document *doc, const char *item);
  char *upnp_igd_get_element_value(upnp_igd_context *uIGD, IXML_Element *element);
  char *upnp_igd_get_first_element_item(upnp_igd_context *uIGD,IXML_Element *element, const char *item);
+--- mediastreamer2-4.4.2/configure.ac.orig	2021-07-05 06:50:46.295451589 +0200
++++ mediastreamer2-4.4.2/configure.ac	2021-07-05 17:16:33.665373367 +0200
+@@ -717,7 +717,7 @@ AC_ARG_ENABLE(upnp,
+ 
+ if test "$build_upnp" != "false" ; then
+ 	PKG_CHECK_MODULES([LIBUPNP], [libupnp],
+-		[if  pkg-config --atleast-version=1.6 "libupnp < 1.7"; then
++		[if  pkg-config --atleast-version=1.8 "libupnp"; then
+ 			build_upnp=true
+ 			old_CFLAGS="$CFLAGS"
+ 			CFLAGS="$CFLAGS $LIBUPNP_CFLAGS -Werror -Wno-error=unused-variable"
+@@ -730,7 +730,7 @@ if test "$build_upnp" != "false" ; then
+ 			AC_DEFINE(USE_PATCHED_UPNP, 1, [Define if upnp is patched]))
+ 			CFLAGS="$old_CFLAGS"
+ 		else
+-			AC_MSG_ERROR([libupnp >= 1.6 < 1.5 required.])
++			AC_MSG_ERROR([libupnp >= 1.8 required.])
+ 		fi],
+ 		[if test "$build_upnp" == "true" ; then
+ 			AC_MSG_ERROR([libupnp not found.])
