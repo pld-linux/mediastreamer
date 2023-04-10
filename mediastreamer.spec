@@ -49,10 +49,10 @@ URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_alsa:BuildRequires:	alsa-lib-devel}
 %{?with_arts:BuildRequires:	artsc-devel}
 %{?with_bcg729:BuildRequires:	bcg729-devel >= 1.1.1-1}
-%{?with_matroska:BuildRequires:	bcmatroska2-devel}
+%{?with_matroska:BuildRequires:	bcmatroska2-devel >= 5.1}
 BuildRequires:	bctoolbox-devel >= 0.4.0
 %{?with_bv16:BuildRequires:	bv16-floatingpoint-devel}
-%{?with_zrtp:BuildRequires:	bzrtp-devel >= 4.5.15-1}
+%{?with_zrtp:BuildRequires:	bzrtp-devel >= 5.1}
 BuildRequires:	cmake >= 3.1
 BuildRequires:	doxygen
 # libavcodec >= 51.0.0, libswscale >= 0.7.0
@@ -70,7 +70,7 @@ BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
 BuildRequires:	libyuv-devel
 BuildRequires:	opus-devel >= 0.9.0
-BuildRequires:	ortp-devel >= 4.5.15-1
+BuildRequires:	ortp-devel >= 5.1
 BuildRequires:	pkgconfig
 %{?with_portaudio:BuildRequires:	portaudio-devel}
 %{?with_pulseaudio:BuildRequires:	pulseaudio-devel >= 0.9.21}
@@ -84,13 +84,14 @@ BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
 %{?with_zxing:BuildRequires:	zxing-cpp-devel}
 %{?with_bcg729:Requires:	bcg729 >= 1.1.1-1}
+%{?with_matroska:Requires:	bcmatroska2 >= 5.1}
 Requires:	bctoolbox >= 0.4.0
-%{?with_zrtp:Requires:	bzrtp >= 4.5}
+%{?with_zrtp:Requires:	bzrtp >= 5.1}
 %{?with_opengl:Requires:	glew >= 1.5}
 Requires:	libtheora >= 1.0-0.alpha7
 Requires:	libvpx >= 0.9.6
 Requires:	opus >= 0.9.0
-Requires:	ortp >= 4.5
+Requires:	ortp >= 5.1
 %{?with_pulseaudio:Requires:	pulseaudio-libs >= 0.9.21}
 Requires:	spandsp >= 0.0.6
 Requires:	speex >= 1:1.2-beta3
@@ -116,10 +117,10 @@ Requires:	%{name} = %{version}-%{release}
 %{?with_opengl:Requires:	OpenGL-devel}
 %{?with_alsa:Requires:	alsa-lib-devel}
 %{?with_bcg729:Requires:	bcg729-devel >= 1.1.1-1}
-%{?with_matroska:Requires:	bcmatroska2-devel}
+%{?with_matroska:Requires:	bcmatroska2-devel >= 5.1}
 Requires:	bctoolbox-devel >= 0.4.0
 %{?with_bv16:Requires:	bv16-floatingpoint-devel}
-%{?with_zrtp:Requires:	bzrtp-devel >= 4.5.15-1}
+%{?with_zrtp:Requires:	bzrtp-devel >= 5.1}
 Requires:	ffmpeg-devel
 %{?with_opengl:Requires:	glew-devel >= 1.5}
 Requires:	libtheora-devel >= 1.0-0.alpha7
@@ -127,7 +128,7 @@ Requires:	libupnp-devel >= 1.8
 Requires:	libv4l-devel
 Requires:	libvpx-devel >= 0.9.6
 Requires:	opus-devel >= 0.9.0
-Requires:	ortp-devel >= 4.5.15-1
+Requires:	ortp-devel >= 5.1
 %{?with_portaudio:Requires:	portaudio-devel}
 %{?with_pulseaudio:Requires:	pulseaudio-devel >= 0.9.21}
 Requires:	spandsp-devel >= 0.0.6
@@ -171,6 +172,8 @@ Statyczne biblioteki mediastreamer.
 
 # cmake checks for python3, so don't require python 2 as well
 %{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' tools/xxd.py
+
+%{__sed} -i -e 's/"-Werror" /"-Werror" "-Wno-error=address"/' CMakeLists.txt
 
 %build
 install -d build
