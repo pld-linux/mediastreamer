@@ -25,13 +25,14 @@
 Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
-Version:	4.5.22
-Release:	2
+# note: 5.2.x is AGPL-licensed; see DEVEL-5.2 branch
+Version:	5.1.72
+Release:	1
 License:	GPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/mediastreamer2/tags
 Source0:	https://gitlab.linphone.org/BC/public/mediastreamer2/-/archive/%{version}/mediastreamer2-%{version}.tar.bz2
-# Source0-md5:	3cdcfb0a1e3bd1b2774ca1da6316dae6
+# Source0-md5:	8b27b959e5872ac9625ab6740aab7376
 Patch0:		build.patch
 Patch1:		%{name}-cmake-link.patch
 Patch2:		libupnp-1.14.patch
@@ -41,7 +42,6 @@ Patch5:		%{name}-cmake-SDL.patch
 Patch6:		%{name}-types.patch
 Patch7:		%{name}-gsm.patch
 Patch8:		%{name}-cmake-upnp.patch
-Patch9:		%{name}-bounds.patch
 Patch10:	%{name}-gcc.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
@@ -68,6 +68,7 @@ BuildRequires:	libtheora-devel >= 1.0-0.alpha7
 BuildRequires:	libupnp-devel >= 1.8
 BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
+BuildRequires:	libyuv-devel
 BuildRequires:	opus-devel >= 0.9.0
 BuildRequires:	ortp-devel >= 4.5.15-1
 BuildRequires:	pkgconfig
@@ -166,7 +167,6 @@ Statyczne biblioteki mediastreamer.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
 %patch10 -p1
 
 # cmake checks for python3, so don't require python 2 as well
@@ -227,8 +227,10 @@ done
 # for external plugins
 install -d $RPM_BUILD_ROOT%{_libdir}/mediastreamer/plugins
 
+# we don't need another copy
+%{__rm} -r $RPM_BUILD_ROOT%{_includedir}/OpenGL
 # Remove duplicated documentation
-%{__rm} -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer2-4.5.0/html
+%{__rm} -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer2-5.1.0/html
 
 %find_lang %{name}
 

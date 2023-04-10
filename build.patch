@@ -17,8 +17,8 @@
  
  AC_MSG_NOTICE([$PACKAGE_NAME-$PACKAGE_VERSION		A mediastreaming library for telephony application.])
  AC_MSG_NOTICE([licensed under the terms of the General Public License (GPL)])
---- mediastreamer2-4.5.22/src/Makefile.am.orig	2021-06-24 23:55:04.000000000 +0200
-+++ mediastreamer2-4.5.22/src/Makefile.am	2021-07-05 18:00:26.701108988 +0200
+--- mediastreamer2-5.1.72/src/Makefile.am.orig	2022-11-18 15:22:23.000000000 +0100
++++ mediastreamer2-5.1.72/src/Makefile.am	2023-04-10 08:48:04.099613394 +0200
 @@ -83,6 +83,7 @@ libmediastreamer_base_la_SOURCES=	base/m
  					base/mswebcam.c \
  					base/mtu.c \
@@ -76,7 +76,7 @@
  					videofilters/ffmpegjpegwriter.c
  endif
  
-@@ -304,20 +309,31 @@ libmediastreamer_voip_la_SOURCES+=	voip/
+@@ -304,21 +309,32 @@ libmediastreamer_voip_la_SOURCES+=	voip/
  					voip/msvideoqualitycontroller.c \
  					voip/msvideo_neon.c \
  					voip/msvideo_neon.h \
@@ -88,6 +88,7 @@
 -					videofilters/nowebcam.c videofilters/ffmpegnowebcam.c voip/nowebcam.h \
 +					videofilters/nowebcam.c voip/nowebcam.h \
  					videofilters/extdisplay.c \
+ 					videofilters/msanalysedisplay.c \
  					utils/bits_rw.c \
  					utils/x11_helper.c \
  					utils/stream_regulator.c utils/stream_regulator.h \
@@ -111,12 +112,12 @@
  if ORTP_ENABLED
  libmediastreamer_voip_la_SOURCES+=	voip/videostream.c
  endif
-@@ -469,7 +485,7 @@ endif
+@@ -470,7 +486,7 @@ endif
  
  AM_OBJCFLAGS=$(AM_CFLAGS)
  
 -imgdir=$(datadir)/images/
-+imgdir=$(pkgdatadir)/images/
++imgdir=$(pkgdatadir)/images
  
  img_DATA=voip/nowebcamCIF.jpg
  

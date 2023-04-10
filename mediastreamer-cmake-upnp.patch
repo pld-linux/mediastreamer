@@ -1,6 +1,6 @@
---- mediastreamer2-4.5.22/CMakeLists.txt.orig	2021-07-09 20:43:58.295679157 +0200
-+++ mediastreamer2-4.5.22/CMakeLists.txt	2021-07-09 21:46:38.291976177 +0200
-@@ -81,6 +81,8 @@ option(ENABLE_PACKAGE_SOURCE "Create 'pa
+--- mediastreamer2-5.1.72/CMakeLists.txt.orig	2023-04-10 19:00:46.387121654 +0200
++++ mediastreamer2-5.1.72/CMakeLists.txt	2023-04-10 19:04:39.545858525 +0200
+@@ -91,6 +91,8 @@ option(ENABLE_OPENGL_PROFILING "Measure
  option(ENABLE_SRTP "Build with the SRTP transport support." YES)
  cmake_dependent_option(ENABLE_ZRTP "Build with ZRTP support." YES "ENABLE_SRTP" NO)
  
@@ -9,10 +9,10 @@
  option(ENABLE_SOUND "Can be used to turn off all possible sound backends." YES)
  cmake_dependent_option(ENABLE_ALSA "Enable ALSA support." YES "ENABLE_SOUND;LINUX_OR_BSD" NO)
  cmake_dependent_option(ENABLE_ANDROIDSND "Enable Android sound support." NO "ENABLE_SOUND;ANDROID" NO)
-@@ -161,6 +163,13 @@ if(ENABLE_PCAP)
+@@ -183,6 +185,13 @@ endif()
+ if(ENABLE_PCAP)
  	find_package(PCAP QUIET)
  endif()
- 
 +if(ENABLE_UPNP)
 +	find_library(UPNP upnp)
 +	if(NOT UPNP)
@@ -21,9 +21,9 @@
 +	endif()
 +endif()
  if(ENABLE_SRTP)
- 	find_package(SRTP)
- 	if(NOT SRTP_FOUND)
-@@ -402,6 +411,11 @@ endif()
+ 	if(NOT DISABLE_SRTP_SEARCH)
+ 		find_package(SRTP "2" REQUIRED)
+@@ -449,6 +458,11 @@ endif()
  if(HAVE_DLOPEN)
  	list(APPEND LINK_LIBS dl)
  endif()
