@@ -27,7 +27,7 @@ Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym
 Name:		mediastreamer
 # note: 5.2.x is AGPL-licensed; see DEVEL-5.2 branch
 Version:	5.1.72
-Release:	1
+Release:	2
 License:	GPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/mediastreamer2/tags
@@ -42,6 +42,7 @@ Patch5:		%{name}-cmake-SDL.patch
 Patch6:		%{name}-types.patch
 Patch7:		%{name}-gsm.patch
 Patch8:		%{name}-cmake-upnp.patch
+Patch9:		%{name}-bzrtp.patch
 Patch10:	%{name}-gcc.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
@@ -52,7 +53,7 @@ URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_matroska:BuildRequires:	bcmatroska2-devel >= 5.1}
 BuildRequires:	bctoolbox-devel >= 0.4.0
 %{?with_bv16:BuildRequires:	bv16-floatingpoint-devel}
-%{?with_zrtp:BuildRequires:	bzrtp-devel >= 5.1}
+%{?with_zrtp:BuildRequires:	bzrtp-devel >= 5.2.51}
 BuildRequires:	cmake >= 3.1
 BuildRequires:	doxygen
 # libavcodec >= 51.0.0, libswscale >= 0.7.0
@@ -86,7 +87,7 @@ BuildRequires:	xorg-lib-libXv-devel
 %{?with_bcg729:Requires:	bcg729 >= 1.1.1-1}
 %{?with_matroska:Requires:	bcmatroska2 >= 5.1}
 Requires:	bctoolbox >= 0.4.0
-%{?with_zrtp:Requires:	bzrtp >= 5.1}
+%{?with_zrtp:Requires:	bzrtp >= 5.2.51}
 %{?with_opengl:Requires:	glew >= 1.5}
 Requires:	libtheora >= 1.0-0.alpha7
 Requires:	libvpx >= 0.9.6
@@ -120,7 +121,7 @@ Requires:	%{name} = %{version}-%{release}
 %{?with_matroska:Requires:	bcmatroska2-devel >= 5.1}
 Requires:	bctoolbox-devel >= 0.4.0
 %{?with_bv16:Requires:	bv16-floatingpoint-devel}
-%{?with_zrtp:Requires:	bzrtp-devel >= 5.1}
+%{?with_zrtp:Requires:	bzrtp-devel >= 5.2.51}
 Requires:	ffmpeg-devel
 %{?with_opengl:Requires:	glew-devel >= 1.5}
 Requires:	libtheora-devel >= 1.0-0.alpha7
@@ -168,6 +169,7 @@ Statyczne biblioteki mediastreamer.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 %patch10 -p1
 
 # cmake checks for python3, so don't require python 2 as well
@@ -176,14 +178,15 @@ Statyczne biblioteki mediastreamer.
 %{__sed} -i -e 's/"-Werror" /"-Werror" "-Wno-error=address"/' CMakeLists.txt
 
 %build
-install -d build
-cd build
+install -d builddir
+cd builddir
 # NLS missing in cmake
 CPPFLAGS="%{rpmcppflags} -DENABLE_NLS=1 -DGETTEXT_PACKAGE=\"mediastreamer\" -DLOCALEDIR=\"%{_localedir}\""
 # note: NON_FREE_CODECS refer to H263, H264, MPEG4 via libavcodec
 %cmake .. \
 	-DCMAKE_INSTALL_INCLUDEDIR=include \
 	-DCMAKE_INSTALL_LIBDIR=%{_lib} \
+	-DDISABLE_BC_PACKAGE_SEARCH:BOOL=OFF \
 	%{!?with_alsa:-DENABLE_ALSA=OFF} \
 	%{?with_arts:-DENABLE_ARTSC=ON} \
 	%{!?with_bv16:-DENABLE_BV16=OFF} \
@@ -210,16 +213,16 @@ CPPFLAGS="%{rpmcppflags} -DENABLE_NLS=1 -DGETTEXT_PACKAGE=\"mediastreamer\" -DLO
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} -C build install \
+%{__make} -C builddir install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 # disable completeness check incompatible with split packaging
 %{__sed} -i -e '/^foreach(target .*IMPORT_CHECK_TARGETS/,/^endforeach/d; /^unset(_IMPORT_CHECK_TARGETS)/d' $RPM_BUILD_ROOT%{_datadir}/Mediastreamer2/cmake/Mediastreamer2Targets.cmake
 
 # missing from install in cmake
-install build/tools/msaudiocmp $RPM_BUILD_ROOT%{_bindir}
+install builddir/tools/msaudiocmp $RPM_BUILD_ROOT%{_bindir}
 %if %{with pcap}
-install build/tools/pcap_playback $RPM_BUILD_ROOT%{_bindir}
+install builddir/tools/pcap_playback $RPM_BUILD_ROOT%{_bindir}
 %endif
 for f in po/*.po ; do
 	lang=$(basename "$f" .po)
@@ -257,7 +260,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%doc build/help/doc/html/*.{css,html,js,png}
+%doc builddir/help/doc/html/*.{css,html,js,png}
 %attr(755,root,root) %{_libdir}/libmediastreamer.so
 %{_includedir}/mediastreamer2
 %{_pkgconfigdir}/mediastreamer.pc
