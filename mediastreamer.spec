@@ -77,6 +77,7 @@ BuildRequires:	pkgconfig
 %{?with_portaudio:BuildRequires:	portaudio-devel}
 %{?with_pulseaudio:BuildRequires:	pulseaudio-devel >= 0.9.21}
 BuildRequires:	python3 >= 1:3
+BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	sed >= 4.0
 %{?with_spandsp:BuildRequires:	spandsp-devel >= 0.0.6}
 BuildRequires:	speex-devel >= 1:1.2-beta3
