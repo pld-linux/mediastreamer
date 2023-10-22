@@ -26,13 +26,13 @@ Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
 # note: 5.2.x is AGPL-licensed; see DEVEL-5.2 branch
-Version:	5.1.72
-Release:	3
+Version:	5.2.109
+Release:	0.1
 License:	GPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/mediastreamer2/tags
 Source0:	https://gitlab.linphone.org/BC/public/mediastreamer2/-/archive/%{version}/mediastreamer2-%{version}.tar.bz2
-# Source0-md5:	8b27b959e5872ac9625ab6740aab7376
+# Source0-md5:	fb37d1ea973015e3c648d219d2ff3dda
 Patch0:		build.patch
 Patch1:		%{name}-cmake-link.patch
 Patch2:		libupnp-1.14.patch
@@ -40,11 +40,7 @@ Patch3:		%{name}-cmake-datadir.patch
 Patch4:		%{name}-cmake-install-pkgconfig.patch
 Patch5:		%{name}-cmake-SDL.patch
 Patch6:		%{name}-types.patch
-Patch7:		%{name}-gsm.patch
-Patch8:		%{name}-cmake-upnp.patch
-Patch9:		%{name}-bzrtp.patch
 Patch10:	%{name}-gcc.patch
-Patch11:	gcc13.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_sdl:BuildRequires:	SDL-devel >= 1.2.0}
@@ -89,12 +85,12 @@ BuildRequires:	xorg-lib-libXv-devel
 %{?with_bcg729:Requires:	bcg729 >= 1.1.1-1}
 %{?with_matroska:Requires:	bcmatroska2 >= 5.1}
 Requires:	bctoolbox >= 0.4.0
-%{?with_zrtp:Requires:	bzrtp >= 5.2.51}
+%{?with_zrtp:Requires:	bzrtp >= 5.2.109}
 %{?with_opengl:Requires:	glew >= 1.5}
 Requires:	libtheora >= 1.0-0.alpha7
 Requires:	libvpx >= 0.9.6
 Requires:	opus >= 0.9.0
-Requires:	ortp >= 5.1
+Requires:	ortp >= 5.2.109
 %{?with_pulseaudio:Requires:	pulseaudio-libs >= 0.9.21}
 Requires:	spandsp >= 0.0.6
 Requires:	speex >= 1:1.2-beta3
@@ -169,11 +165,7 @@ Statyczne biblioteki mediastreamer.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
 %patch10 -p1
-%patch11 -p1
 
 # cmake checks for python3, so don't require python 2 as well
 %{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' tools/xxd.py
