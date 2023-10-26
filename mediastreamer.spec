@@ -27,7 +27,7 @@ Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym
 Name:		mediastreamer
 # note: 5.2.x is AGPL-licensed; see DEVEL-5.2 branch
 Version:	5.2.109
-Release:	0.1
+Release:	0.2
 License:	GPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/mediastreamer2/tags
@@ -41,6 +41,7 @@ Patch4:		%{name}-cmake-install-pkgconfig.patch
 Patch5:		%{name}-cmake-SDL.patch
 Patch6:		%{name}-types.patch
 Patch10:	%{name}-gcc.patch
+Patch11:	ffmpeg_5_0_fixes.patch
 URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_sdl:BuildRequires:	SDL-devel >= 1.2.0}
@@ -166,11 +167,12 @@ Statyczne biblioteki mediastreamer.
 %patch5 -p1
 %patch6 -p1
 %patch10 -p1
+%patch11 -p1
 
 # cmake checks for python3, so don't require python 2 as well
 %{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' tools/xxd.py
 
-%{__sed} -i -e 's/"-Werror" /"-Werror" "-Wno-error=address"/' CMakeLists.txt
+%{__sed} -i -e 's/"-Werror" /"-Werror" "-Wno-error=address" "-Wno-error=unused-parameter"/' CMakeLists.txt
 
 %build
 install -d builddir
@@ -231,7 +233,7 @@ install -d $RPM_BUILD_ROOT%{_libdir}/mediastreamer/plugins
 # we don't need another copy
 %{__rm} -r $RPM_BUILD_ROOT%{_includedir}/OpenGL
 # Remove duplicated documentation
-%{__rm} -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer2-5.1.0/html
+%{__rm} -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer2-5.2.0/html
 
 %find_lang %{name}
 
