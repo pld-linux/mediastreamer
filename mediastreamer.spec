@@ -27,7 +27,7 @@ Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym
 Name:		mediastreamer
 # note: 5.2.x is AGPL-licensed; see DEVEL-5.2 branch
 Version:	5.2.109
-Release:	0.2
+Release:	1
 License:	GPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/mediastreamer2/tags
