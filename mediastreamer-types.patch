@@ -1,29 +1,29 @@
---- mediastreamer2-4.5.22/src/videofilters/videoout.c.orig	2021-06-24 23:55:04.000000000 +0200
-+++ mediastreamer2-4.5.22/src/videofilters/videoout.c	2021-07-09 19:42:52.842203289 +0200
-@@ -152,7 +152,7 @@ typedef struct _SdlDisplay{
+--- mediastreamer2-5.3.29/src/videofilters/videoout.c.orig	2024-03-09 07:29:22.956733888 +0100
++++ mediastreamer2-5.3.29/src/videofilters/videoout.c	2024-03-09 08:18:42.107369462 +0100
+@@ -147,7 +147,7 @@ typedef struct _SdlDisplay {
  
  #include <SDL/SDL_syswm.h>
  
--static long sdl_get_native_window_id(){
-+static long sdl_get_native_window_id(void){
+-static long sdl_get_native_window_id() {
++static long sdl_get_native_window_id(void) {
  	SDL_SysWMinfo info;
  	SDL_VERSION(&info.version);
- 	if ( SDL_GetWMInfo(&info) ) {
-@@ -191,7 +191,7 @@ static void sdl_show_window(bool_t show)
- 	#endif
+ 	if (SDL_GetWMInfo(&info)) {
+@@ -184,7 +184,7 @@ static void sdl_show_window(bool_t show)
+ #endif
  }
  
--static long sdl_get_native_window_id(){
-+static long sdl_get_native_window_id(void){
- 	#if !SDL_VERSION_ATLEAST(1, 3, 0)
+-static long sdl_get_native_window_id() {
++static long sdl_get_native_window_id(void) {
+ #if !SDL_VERSION_ATLEAST(1, 3, 0)
  	ms_warning("sdl_get_native_window_id not implemented");
- 	#endif
-@@ -257,7 +257,7 @@ static int sdl_create_window(SdlDisplay
- 		ms_message("%i x %i YUV overlay created: hw_accel=%i, pitches=%i,%i,%i",wd->lay->w,wd->lay->h,wd->lay->hw_overlay,
- 			wd->lay->pitches[0],wd->lay->pitches[1],wd->lay->pitches[2]);
- 		ms_message("planes= %p %p %p  %li %li",wd->lay->pixels[0],wd->lay->pixels[1],wd->lay->pixels[2],
--			wd->lay->pixels[1]-wd->lay->pixels[0],wd->lay->pixels[2]-wd->lay->pixels[1]);
-+			(long)(wd->lay->pixels[1]-wd->lay->pixels[0]),(long)(wd->lay->pixels[2]-wd->lay->pixels[1]));
+ #endif
+@@ -241,7 +241,7 @@ static int sdl_create_window(SdlDisplay
+ 		ms_message("%i x %i YUV overlay created: hw_accel=%i, pitches=%i,%i,%i", wd->lay->w, wd->lay->h,
+ 		           wd->lay->hw_overlay, wd->lay->pitches[0], wd->lay->pitches[1], wd->lay->pitches[2]);
+ 		ms_message("planes= %p %p %p  %li %li", wd->lay->pixels[0], wd->lay->pixels[1], wd->lay->pixels[2],
+-		           wd->lay->pixels[1] - wd->lay->pixels[0], wd->lay->pixels[2] - wd->lay->pixels[1]);
++		           (long)(wd->lay->pixels[1] - wd->lay->pixels[0]), (long)(wd->lay->pixels[2] - wd->lay->pixels[1]));
  		SDL_UnlockYUVOverlay(wd->lay);
  	}
  #ifdef __linux__

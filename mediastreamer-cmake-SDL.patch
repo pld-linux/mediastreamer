@@ -1,7 +1,7 @@
---- mediastreamer2-5.1.72/CMakeLists.txt.orig	2023-04-10 18:45:22.718792262 +0200
-+++ mediastreamer2-5.1.72/CMakeLists.txt	2023-04-10 19:00:27.760555896 +0200
-@@ -325,7 +325,13 @@ if(NOT APPLE AND NOT ANDROID AND OPENGL_
- 		set(MS2_USE_OLD_OPENGL_PROTOTYPE TRUE)#Before 1.11, Glew have few different headers from OpenGL Specs
+--- mediastreamer2-5.3.29/CMakeLists.txt.orig	2024-03-09 07:26:07.891123982 +0100
++++ mediastreamer2-5.3.29/CMakeLists.txt	2024-03-09 07:28:42.010289047 +0100
+@@ -297,7 +297,13 @@ if(NOT APPLE AND NOT ANDROID AND OPENGL_
+ 		set(MS2_USE_OLD_OPENGL_PROTOTYPE TRUE) # Before 1.11, Glew have few different headers from OpenGL Specs
  	endif()
  endif()
 -# TODO: Handle SDL option
@@ -14,14 +14,14 @@
 +endif()
  if(ENABLE_THEORA)
  	find_package(Theora)
- 	if(NOT THEORA_FOUND)
-@@ -498,6 +504,9 @@ if(GLEW_FOUND)
- 	list(APPEND LINK_LIBS GLEW)
- 	list(APPEND MEDIASTREAMER2_INCLUDE_DIRS ${GLEW_INCLUDE_DIRS})
+ 	if(NOT Theora_FOUND)
+@@ -462,6 +468,9 @@ endif()
+ if(GLEW_FOUND)
+ 	list(APPEND LINK_LIBS GLEW::GLEW)
  endif()
 +if(SDL_FOUND)
 +	list(APPEND LINK_LIBS SDL)
 +endif()
- if(THEORA_FOUND)
- 	list(APPEND LINK_LIBS theora)
+ if(Theora_FOUND)
+ 	list(APPEND LINK_LIBS ${Theora_TARGET})
  endif()

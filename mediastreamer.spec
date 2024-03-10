@@ -20,19 +20,18 @@
 %bcond_without	sdl		# SDL support
 # video codecs
 %bcond_without	matroska	# Matroska support via bcmatroska2
-%bcond_without	zxing		# QRcode support via zxing-cpp
+%bcond_without	zxing		# QRcode support via zxing-cpp-nu
 #
 Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
-# note: 5.2.x is AGPL-licensed; see DEVEL-5.2 branch
-Version:	5.2.109
+Version:	5.3.29
 Release:	1
-License:	GPL v3+
+License:	AGPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/mediastreamer2/tags
 Source0:	https://gitlab.linphone.org/BC/public/mediastreamer2/-/archive/%{version}/mediastreamer2-%{version}.tar.bz2
-# Source0-md5:	fb37d1ea973015e3c648d219d2ff3dda
+# Source0-md5:	582b4e2563297e7737b7b899b66c1edb
 Patch0:		build.patch
 Patch1:		%{name}-cmake-link.patch
 Patch2:		libupnp-1.14.patch
@@ -40,36 +39,38 @@ Patch3:		%{name}-cmake-datadir.patch
 Patch4:		%{name}-cmake-install-pkgconfig.patch
 Patch5:		%{name}-cmake-SDL.patch
 Patch6:		%{name}-types.patch
-Patch10:	%{name}-gcc.patch
-Patch11:	ffmpeg_5_0_fixes.patch
-URL:		http://www.linphone.org/technical-corner/mediastreamer2/overview
+Patch7:		ffmpeg_5_0_fixes.patch
+Patch8:		%{name}-cmake-find.patch
+URL:		https://www.linphone.org/technical-corner/mediastreamer2-ortp
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_sdl:BuildRequires:	SDL-devel >= 1.2.0}
 %{?with_alsa:BuildRequires:	alsa-lib-devel}
 %{?with_arts:BuildRequires:	artsc-devel}
-%{?with_bcg729:BuildRequires:	bcg729-devel >= 1.1.1-1}
-%{?with_matroska:BuildRequires:	bcmatroska2-devel >= 5.1}
-BuildRequires:	bctoolbox-devel >= 0.4.0
+%{?with_bcg729:BuildRequires:	bcg729-devel >= 1.1.1-2}
+%{?with_matroska:BuildRequires:	bcmatroska2-devel >= 5.3}
+BuildRequires:	bctoolbox-devel >= 5.3.0
 %{?with_bv16:BuildRequires:	bv16-floatingpoint-devel}
-%{?with_zrtp:BuildRequires:	bzrtp-devel >= 5.2.51}
-BuildRequires:	cmake >= 3.1
+%{?with_zrtp:BuildRequires:	bzrtp-devel >= 5.3.0}
+BuildRequires:	cmake >= 3.22
+BuildRequires:	dav1d-devel
 BuildRequires:	doxygen
 # libavcodec >= 51.0.0, libswscale >= 0.7.0
-BuildRequires:	ffmpeg-devel
+BuildRequires:	ffmpeg-devel >= 4.4
 BuildRequires:	gettext-tools
 %{?with_opengl:BuildRequires:	glew-devel >= 1.5}
 BuildRequires:	intltool >= 0.40
 BuildRequires:	libgsm-devel
 BuildRequires:	libjpeg-turbo-devel
 %{?with_pcap:BuildRequires:	libpcap-devel}
-BuildRequires:	libstdc++-devel >= 6:5
+%{?with_srtp:BuildRequires:	libsrtp2-devel >= 2}
+BuildRequires:	libstdc++-devel >= 6:7
 BuildRequires:	libtheora-devel >= 1.0-0.alpha7
 BuildRequires:	libupnp-devel >= 1.8
 BuildRequires:	libv4l-devel
 BuildRequires:	libvpx-devel >= 0.9.6
 BuildRequires:	libyuv-devel
 BuildRequires:	opus-devel >= 0.9.0
-BuildRequires:	ortp-devel >= 5.1
+BuildRequires:	ortp-devel >= 5.3.0
 BuildRequires:	pkgconfig
 %{?with_portaudio:BuildRequires:	portaudio-devel}
 %{?with_pulseaudio:BuildRequires:	pulseaudio-devel >= 0.9.21}
@@ -79,19 +80,18 @@ BuildRequires:	sed >= 4.0
 %{?with_spandsp:BuildRequires:	spandsp-devel >= 0.0.6}
 BuildRequires:	speex-devel >= 1:1.2-beta3
 BuildRequires:	speexdsp-devel >= 1.2-beta3
-%{?with_srtp:BuildRequires:	libsrtp2-devel}
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
-%{?with_zxing:BuildRequires:	zxing-cpp-devel}
-%{?with_bcg729:Requires:	bcg729 >= 1.1.1-1}
-%{?with_matroska:Requires:	bcmatroska2 >= 5.1}
-Requires:	bctoolbox >= 0.4.0
-%{?with_zrtp:Requires:	bzrtp >= 5.2.109}
+%{?with_zxing:BuildRequires:	zxing-cpp-nu-devel}
+%{?with_bcg729:Requires:	bcg729 >= 1.1.1-2}
+%{?with_matroska:Requires:	bcmatroska2 >= 5.3}
+Requires:	bctoolbox >= 5.3.0
+%{?with_zrtp:Requires:	bzrtp >= 5.3.0}
 %{?with_opengl:Requires:	glew >= 1.5}
 Requires:	libtheora >= 1.0-0.alpha7
 Requires:	libvpx >= 0.9.6
 Requires:	opus >= 0.9.0
-Requires:	ortp >= 5.2.109
+Requires:	ortp >= 5.3.0
 %{?with_pulseaudio:Requires:	pulseaudio-libs >= 0.9.21}
 Requires:	spandsp >= 0.0.6
 Requires:	speex >= 1:1.2-beta3
@@ -116,25 +116,25 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 %{?with_opengl:Requires:	OpenGL-devel}
 %{?with_alsa:Requires:	alsa-lib-devel}
-%{?with_bcg729:Requires:	bcg729-devel >= 1.1.1-1}
-%{?with_matroska:Requires:	bcmatroska2-devel >= 5.1}
-Requires:	bctoolbox-devel >= 0.4.0
+%{?with_bcg729:Requires:	bcg729-devel >= 1.1.1-2}
+%{?with_matroska:Requires:	bcmatroska2-devel >= 5.3}
+Requires:	bctoolbox-devel >= 5.3.0
 %{?with_bv16:Requires:	bv16-floatingpoint-devel}
-%{?with_zrtp:Requires:	bzrtp-devel >= 5.2.51}
-Requires:	ffmpeg-devel
+%{?with_zrtp:Requires:	bzrtp-devel >= 5.3.0}
+Requires:	ffmpeg-devel >= 4.4
 %{?with_opengl:Requires:	glew-devel >= 1.5}
+%{?with_srtp:Requires:	libsrtp2-devel >= 2}
 Requires:	libtheora-devel >= 1.0-0.alpha7
 Requires:	libupnp-devel >= 1.8
 Requires:	libv4l-devel
 Requires:	libvpx-devel >= 0.9.6
 Requires:	opus-devel >= 0.9.0
-Requires:	ortp-devel >= 5.1
+Requires:	ortp-devel >= 5.3.0
 %{?with_portaudio:Requires:	portaudio-devel}
 %{?with_pulseaudio:Requires:	pulseaudio-devel >= 0.9.21}
 Requires:	spandsp-devel >= 0.0.6
 Requires:	speex-devel >= 1:1.2-beta3
 Requires:	speexdsp-devel >= 1.2-beta3
-%{?with_srtp:Requires:	libsrtp2-devel}
 Requires:	xorg-lib-libX11-devel
 Requires:	xorg-lib-libXv-devel
 
@@ -166,8 +166,8 @@ Statyczne biblioteki mediastreamer.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch10 -p1
-%patch11 -p1
+%patch7 -p1
+%patch8 -p1
 
 # cmake checks for python3, so don't require python 2 as well
 %{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' tools/xxd.py
@@ -175,15 +175,14 @@ Statyczne biblioteki mediastreamer.
 %{__sed} -i -e 's/"-Werror" /"-Werror" "-Wno-error=address" "-Wno-error=unused-parameter"/' CMakeLists.txt
 
 %build
-install -d builddir
-cd builddir
-# NLS missing in cmake
-CPPFLAGS="%{rpmcppflags} -DENABLE_NLS=1 -DGETTEXT_PACKAGE=\"mediastreamer\" -DLOCALEDIR=\"%{_localedir}\""
-# note: NON_FREE_CODECS refer to H263, H264, MPEG4 via libavcodec
-%cmake .. \
+configure() {
+set -x
+builddir="$1"
+shift
+# note: NON_FREE_FEATURES refer to H263, H264, MPEG4 via libavcodec
+%cmake -B "$builddir" \
 	-DCMAKE_INSTALL_INCLUDEDIR=include \
 	-DCMAKE_INSTALL_LIBDIR=%{_lib} \
-	-DDISABLE_BC_PACKAGE_SEARCH:BOOL=OFF \
 	%{!?with_alsa:-DENABLE_ALSA=OFF} \
 	%{?with_arts:-DENABLE_ARTSC=ON} \
 	%{!?with_bv16:-DENABLE_BV16=OFF} \
@@ -193,7 +192,7 @@ CPPFLAGS="%{rpmcppflags} -DENABLE_NLS=1 -DGETTEXT_PACKAGE=\"mediastreamer\" -DLO
 	%{!?with_opengl:-DENABLE_GL=OFF} \
 	%{!?with_opengl:-DENABLE_GLX=OFF} \
 	%{!?with_matroska:-DENABLE_MKV=OFF} \
-	-DENABLE_NON_FREE_CODECS=ON \
+	-DENABLE_NON_FREE_FEATURES=ON \
 	%{?with_oss:-DENABLE_OSS=ON} \
 	%{?with_pcap:-DENABLE_PCAP=ON} \
 	%{?with_portaudio:-DENABLE_PORTAUDIO=ON} \
@@ -201,25 +200,44 @@ CPPFLAGS="%{rpmcppflags} -DENABLE_NLS=1 -DGETTEXT_PACKAGE=\"mediastreamer\" -DLO
 	%{!?with_zxing:-DENABLE_QRCODE=OFF} \
 	%{?with_sdl:-DENABLE_SDL=ON} \
 	%{!?with_srtp:-DENABLE_SRTP=OFF} \
-	%{!?with_static_libs:-DENABLE_STATIC=OFF} \
 	-DENABLE_UNIT_TESTS=OFF \
-	%{!?with_zrtp:-DENABLE_ZRTP=OFF}
+	%{!?with_zrtp:-DENABLE_ZRTP=OFF} \
+	"$@"
+}
 
-%{__make}
+# NLS missing in cmake
+# GSM_USE_BUILD_INTERFACE to include <gsm.h> instead of <gsm/gsm.h>
+CPPFLAGS="%{rpmcppflags} -DENABLE_NLS=1 -DGETTEXT_PACKAGE=\\\"mediastreamer\\\" -DLOCALEDIR=\\\"%{_localedir}\\\" -DGSM_USE_BUILD_INTERFACE=1"
+# CPPFLAGS are not used, so append
+CFLAGS="%{rpmcflags} $CPPFLAGS"
+CXXFLAGS="%{rpmcxxflags} $CPPFLAGS"
+
+%if %{with static_libs}
+configure builddir-static \
+	-DBUILD_SHARED_LIBS=OFF
+
+%{__make} -C builddir-static
+%endif
+
+configure builddir
+
+%{__make} -C builddir
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with static_libs}
+%{__make} -C builddir-static install \
+	DESTDIR=$RPM_BUILD_ROOT
+%endif
+
 %{__make} -C builddir install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-# disable completeness check incompatible with split packaging
-%{__sed} -i -e '/^foreach(target .*IMPORT_CHECK_TARGETS/,/^endforeach/d; /^unset(_IMPORT_CHECK_TARGETS)/d' $RPM_BUILD_ROOT%{_datadir}/Mediastreamer2/cmake/Mediastreamer2Targets.cmake
-
 # missing from install in cmake
-install builddir/tools/msaudiocmp $RPM_BUILD_ROOT%{_bindir}
+install builddir/tools/mediastreamer2-msaudiocmp $RPM_BUILD_ROOT%{_bindir}
 %if %{with pcap}
-install builddir/tools/pcap_playback $RPM_BUILD_ROOT%{_bindir}
+install builddir/tools/mediastreamer2-pcap_playback $RPM_BUILD_ROOT%{_bindir}
 %endif
 for f in po/*.po ; do
 	lang=$(basename "$f" .po)
@@ -233,7 +251,7 @@ install -d $RPM_BUILD_ROOT%{_libdir}/mediastreamer/plugins
 # we don't need another copy
 %{__rm} -r $RPM_BUILD_ROOT%{_includedir}/OpenGL
 # Remove duplicated documentation
-%{__rm} -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer2-5.2.0/html
+%{__rm} -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer2-5.3.0/html
 
 %find_lang %{name}
 
@@ -246,11 +264,13 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc CHANGELOG.md README.md
-%attr(755,root,root) %{_bindir}/mediastream
-%attr(755,root,root) %{_bindir}/mkvstream
-%attr(755,root,root) %{_bindir}/msaudiocmp
-%{?with_pcap:%attr(755,root,root) %{_bindir}/pcap_playback}
-%attr(755,root,root) %{_libdir}/libmediastreamer.so.11
+%attr(755,root,root) %{_bindir}/mediastreamer2-mediastream
+%attr(755,root,root) %{_bindir}/mediastreamer2-mkvstream
+%attr(755,root,root) %{_bindir}/mediastreamer2-msaudiocmp
+%if %{with pcap}
+%attr(755,root,root) %{_bindir}/mediastreamer2-pcap-playback
+%endif
+%attr(755,root,root) %{_libdir}/libmediastreamer2.so.11
 %dir %{_libdir}/mediastreamer
 %dir %{_libdir}/mediastreamer/plugins
 %{_datadir}/mediastreamer
@@ -258,7 +278,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %doc builddir/help/doc/html/*.{css,html,js,png}
-%attr(755,root,root) %{_libdir}/libmediastreamer.so
+%attr(755,root,root) %{_libdir}/libmediastreamer2.so
 %{_includedir}/mediastreamer2
 %{_pkgconfigdir}/mediastreamer.pc
 %dir %{_datadir}/Mediastreamer2
@@ -267,5 +287,5 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libmediastreamer.a
+%{_libdir}/libmediastreamer2.a
 %endif
