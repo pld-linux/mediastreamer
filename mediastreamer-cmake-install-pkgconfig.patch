@@ -47,6 +47,6 @@ index 3870fda82..480bb1686 100644
  Requires: ortp bctoolbox
  Version: @MEDIASTREAMER_VERSION@
 -Libs: -L@libdir@ -lmediastreamer_base -lmediastreamer_voip
-+Libs: -L@libdir@ -lmediastreamer
++Libs: -L@libdir@ -lmediastreamer2
  Cflags: -I@includedir@ @MS_PUBLIC_CFLAGS@
 
