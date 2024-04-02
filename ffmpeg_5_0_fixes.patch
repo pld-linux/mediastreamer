@@ -92,8 +92,8 @@ Bug-Debian: https://bugs.debian.org/1004819
  AVCodecContext *avcodec_alloc_context3(AVCodec *codec) {
  	return avcodec_alloc_context();
  }
---- mediastreamer2-5.3.29/src/videofilters/videodec.c.orig	2024-02-21 12:02:03.000000000 +0100
-+++ mediastreamer2-5.3.29/src/videofilters/videodec.c	2024-03-09 16:15:27.685733089 +0100
+--- mediastreamer2-5.3.38/src/videofilters/videodec.c.orig	2024-03-25 15:57:39.000000000 +0100
++++ mediastreamer2-5.3.38/src/videofilters/videodec.c	2024-04-02 21:59:15.943207387 +0200
 @@ -47,8 +47,8 @@
  extern void ms_ffmpeg_check_init(void);
  
@@ -201,15 +201,6 @@ Bug-Debian: https://bugs.debian.org/1004819
  	return yuv_msg;
  }
  /* Bitmasks to select bits of a byte from low side */
-@@ -600,7 +606,7 @@ static unsigned char smasks[7] = {0x7f,
- static void dec_process_frame(MSFilter *f, mblk_t *inm) {
- 	DecState *s = (DecState *)f->data;
- 
--	int got_picture;
-+	int got_picture = 0;
- 	/* get a picture from the input queue */
- 
- 	if (f->desc->id == MS_H263_DEC_ID) inm = skip_rfc2429_header(inm);
 @@ -649,12 +655,27 @@ static void dec_process_frame(MSFilter *
  				pkt.data = frame->b_rptr;
  				pkt.size = remain;
