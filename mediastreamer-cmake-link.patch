@@ -1,7 +1,8 @@
---- mediastreamer2-5.3.29/src/CMakeLists.txt.orig	2024-03-09 18:09:20.452050150 +0100
-+++ mediastreamer2-5.3.29/src/CMakeLists.txt	2024-03-09 18:54:37.470664130 +0100
-@@ -614,8 +614,8 @@ if(BUILD_SHARED_LIBS)
- 			set_target_properties(mediastreamer2 PROPERTIES LINK_FLAGS "-Wl,--exclude-libs,libvpx.a")
+diff -up mediastreamer2-5.3.104/src/CMakeLists.txt._orig mediastreamer2-5.3.104/src/CMakeLists.txt
+--- mediastreamer2-5.3.104/src/CMakeLists.txt._orig	2025-01-24 22:10:35.324991406 +0100
++++ mediastreamer2-5.3.104/src/CMakeLists.txt	2025-01-24 22:13:34.210568658 +0100
+@@ -615,8 +615,8 @@ if(BUILD_SHARED_LIBS)
+ 			target_link_options(mediastreamer2 PRIVATE "-Wl,--exclude-libs,libvpx.a")
  		endif()
  		# Do not version shared library on Android
 -		set_target_properties(mediastreamer2 PROPERTIES SOVERSION ${MEDIASTREAMER_SO_VERSION})
