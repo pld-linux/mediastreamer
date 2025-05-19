@@ -1,6 +1,6 @@
---- mediastreamer2-5.3.29/CMakeLists.txt.orig	2024-03-09 07:26:07.891123982 +0100
-+++ mediastreamer2-5.3.29/CMakeLists.txt	2024-03-09 07:28:42.010289047 +0100
-@@ -297,7 +297,13 @@ if(NOT APPLE AND NOT ANDROID AND OPENGL_
+--- mediastreamer2-5.4.17/CMakeLists.txt.orig	2025-05-19 20:19:27.509061004 +0200
++++ mediastreamer2-5.4.17/CMakeLists.txt	2025-05-19 20:23:06.907872418 +0200
+@@ -321,7 +321,13 @@ if(NOT APPLE AND NOT ANDROID AND OPENGL_
  		set(MS2_USE_OLD_OPENGL_PROTOTYPE TRUE) # Before 1.11, Glew have few different headers from OpenGL Specs
  	endif()
  endif()
@@ -15,9 +15,9 @@
  if(ENABLE_THEORA)
  	find_package(Theora)
  	if(NOT Theora_FOUND)
-@@ -462,6 +468,9 @@ endif()
+@@ -522,6 +528,9 @@ endif()
  if(GLEW_FOUND)
- 	list(APPEND LINK_LIBS GLEW::GLEW)
+ 	list(APPEND LINK_LIBS GLEW::glew)
  endif()
 +if(SDL_FOUND)
 +	list(APPEND LINK_LIBS SDL)

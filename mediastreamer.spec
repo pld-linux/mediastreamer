@@ -25,13 +25,13 @@
 Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
-Version:	5.3.104
+Version:	5.4.17
 Release:	1
 License:	AGPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/mediastreamer2/tags
 Source0:	https://gitlab.linphone.org/BC/public/mediastreamer2/-/archive/%{version}/mediastreamer2-%{version}.tar.bz2
-# Source0-md5:	f7984d0be1545b0cfb20014d5c79dec4
+# Source0-md5:	0d16486bc086c9fdad8c6c17d104056b
 Patch0:		build.patch
 Patch1:		%{name}-cmake-link.patch
 Patch2:		libupnp-1.14.patch
@@ -45,6 +45,7 @@ URL:		https://www.linphone.org/technical-corner/mediastreamer2-ortp
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_sdl:BuildRequires:	SDL-devel >= 1.2.0}
 %{?with_alsa:BuildRequires:	alsa-lib-devel}
+BuildRequires:	aom-devel
 %{?with_arts:BuildRequires:	artsc-devel}
 %{?with_bcg729:BuildRequires:	bcg729-devel >= 1.1.1-2}
 %{?with_matroska:BuildRequires:	bcmatroska2-devel >= 5.3}
@@ -81,6 +82,8 @@ BuildRequires:	sed >= 4.0
 BuildRequires:	speex-devel >= 1:1.2-beta3
 BuildRequires:	speexdsp-devel >= 1.2-beta3
 BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXfixes-devel
+BuildRequires:	xorg-lib-libXinerama-devel
 BuildRequires:	xorg-lib-libXv-devel
 %{?with_zxing:BuildRequires:	zxing-cpp-nu-devel}
 %{?with_bcg729:Requires:	bcg729 >= 1.1.1-2}
@@ -251,7 +254,7 @@ install -d $RPM_BUILD_ROOT%{_libdir}/mediastreamer/plugins
 # we don't need another copy
 %{__rm} -r $RPM_BUILD_ROOT%{_includedir}/OpenGL
 # Remove duplicated documentation
-%{__rm} -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer2-5.3.0/html
+%{__rm} -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer2-5.4.0/html
 
 %find_lang %{name}
 
@@ -270,6 +273,8 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with pcap}
 %attr(755,root,root) %{_bindir}/mediastreamer2-pcap-playback
 %endif
+%attr(755,root,root) %{_bindir}/mediastreamer2-player
+%attr(755,root,root) %{_bindir}/mediastreamer2-recorder
 %attr(755,root,root) %{_libdir}/libmediastreamer2.so.11
 %dir %{_libdir}/mediastreamer
 %dir %{_libdir}/mediastreamer/plugins
