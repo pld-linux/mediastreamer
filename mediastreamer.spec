@@ -25,13 +25,13 @@
 Summary:	Audio/Video real-time streaming
 Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
 Name:		mediastreamer
-Version:	5.4.17
-Release:	2
+Version:	5.4.38
+Release:	1
 License:	AGPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/mediastreamer2/tags
 Source0:	https://gitlab.linphone.org/BC/public/mediastreamer2/-/archive/%{version}/mediastreamer2-%{version}.tar.bz2
-# Source0-md5:	0d16486bc086c9fdad8c6c17d104056b
+# Source0-md5:	12b332bbc04d11973f7c42a0e72056a6
 Patch0:		build.patch
 Patch1:		%{name}-cmake-link.patch
 Patch2:		libupnp-1.14.patch
@@ -162,15 +162,15 @@ Statyczne biblioteki mediastreamer.
 
 %prep
 %setup -q -n mediastreamer2-%{version}
-%patch -P 0 -p1
-%patch -P 1 -p1
-%patch -P 2 -p1
-%patch -P 3 -p1
-%patch -P 4 -p1
-%patch -P 5 -p1
-%patch -P 6 -p1
-%patch -P 7 -p1
-%patch -P 8 -p1
+%patch -P0 -p1
+%patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
+%patch -P5 -p1
+%patch -P6 -p1
+%patch -P7 -p1
+%patch -P8 -p1
 
 # cmake checks for python3, so don't require python 2 as well
 %{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' tools/xxd.py
