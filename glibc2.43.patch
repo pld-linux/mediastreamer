@@ -1,0 +1,37 @@
+--- mediastreamer2-5.4.38/src/voip/ice.c.orig	2025-08-07 11:32:51.000000000 +0200
++++ mediastreamer2-5.4.38/src/voip/ice.c	2026-02-18 18:58:34.220916612 +0100
+@@ -2089,7 +2089,7 @@
+                                                        const MSStunMessage *msg,
+                                                        const MSStunAddress *remote_addr) {
+ 	const char *username = ms_stun_message_get_username(msg);
+-	char *colon = strchr(username, ':');
++	const char *colon = strchr(username, ':');
+ 	if ((colon == NULL) || (strncmp(username, ice_check_list_local_ufrag(cl), colon - username) != 0)) {
+ 		ms_error("ice: Wrong USERNAME attribute (colon=%p)", colon);
+ 		ice_send_error_response(rtp_session, evt_data, msg, remote_addr, MS_STUN_ERROR_CODE_UNAUTHORIZED,
+--- mediastreamer2-5.4.38/tools/common.c.orig	2025-08-07 11:32:51.000000000 +0200
++++ mediastreamer2-5.4.38/tools/common.c	2026-02-18 19:02:33.895239557 +0100
+@@ -44,7 +44,7 @@
+ 	char subtype[64] = {0};
+ 	char clockrate[64] = {0};
+ 	char nchannels[64];
+-	char *separator;
++	const char *separator;
+ 
+ 	if (strlen(name) >= sizeof(clockrate) - 1) {
+ 		fprintf(stderr, "Cannot parse %s: too long.\n", name);
+@@ -53,12 +53,12 @@
+ 
+ 	separator = strchr(name, '/');
+ 	if (separator) {
+-		char *separator2;
++		const char *separator2;
+ 
+ 		strncpy(type, name, separator - name);
+ 		separator2 = strchr(separator + 1, '/');
+ 		if (separator2) {
+-			char *separator3;
++			const char *separator3;
+ 
+ 			strncpy(subtype, separator + 1, separator2 - separator - 1);
+ 			separator3 = strchr(separator2 + 1, '/');

@@ -23,7 +23,7 @@
 %bcond_without	zxing		# QRcode support via zxing-cpp-nu
 #
 Summary:	Audio/Video real-time streaming
-Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym 
+Summary(pl.UTF-8):	Przesyłanie strumieni audio/video w czasie rzeczywistym
 Name:		mediastreamer
 Version:	5.4.38
 Release:	2
@@ -41,6 +41,7 @@ Patch5:		%{name}-cmake-SDL.patch
 Patch6:		%{name}-types.patch
 Patch7:		ffmpeg_5_0_fixes.patch
 Patch8:		%{name}-cmake-find.patch
+Patch9:		glibc2.43.patch
 URL:		https://www.linphone.org/technical-corner/mediastreamer2-ortp
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_sdl:BuildRequires:	SDL-devel >= 1.2.0}
@@ -171,6 +172,7 @@ Statyczne biblioteki mediastreamer.
 %patch -P6 -p1
 %patch -P7 -p1
 %patch -P8 -p1
+%patch -P9 -p1
 
 # cmake checks for python3, so don't require python 2 as well
 %{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' tools/xxd.py
